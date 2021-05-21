@@ -13,6 +13,10 @@
 
 * npm install
 
+## STARTING APP COMMAND
+
+* expo start (or npm start)
+
 ## USEFUL ICON LINK
 https://icons.expo.fyi/
 
