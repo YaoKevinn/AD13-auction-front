@@ -13,9 +13,9 @@ enableScreens();
 
 const fetchFonts = () => {
     return Font.loadAsync({
-        "poppins-bold": require("./assets/fonts/Poppins-Bold.ttf"),
+        "poppins-700": require("./assets/fonts/Poppins-Bold.ttf"),
         "poppins-light-italic": require("./assets/fonts/Poppins-LightItalic.ttf"),
-        "poppins-regular": require("./assets/fonts/Poppins-Regular.ttf"),
+        "poppins-400": require("./assets/fonts/Poppins-Regular.ttf"),
         "poppins-100": require("./assets/fonts/Poppins-Thin.ttf"),
         "poppins-200": require("./assets/fonts/Poppins-ExtraLight.ttf"),
         "poppins-300": require("./assets/fonts/Poppins-Light.ttf"),
@@ -41,9 +41,7 @@ export default function App() {
 
   return (
       <View style={styles.mainView}>
-            <SafeAreaView>
-                <StatusBar translucent backgroundColor="#000" barStyle="light-content"/>
-            </SafeAreaView>
+            <StatusBar backgroundColor="#3E568E" barStyle="light-content"/>
             <MainNavigator />
       </View>
   );
@@ -52,6 +50,6 @@ export default function App() {
 const styles = StyleSheet.create({
     mainView: {
         flex: 1,
-        backgroundColor: Colors.black
+        backgroundColor: Colors.PRIMARY_BLUE
     }
 });

@@ -20,11 +20,11 @@ const DefaultButton = (props) => {
 const styles = StyleSheet.create({
     button: {
         paddingVertical: 15,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.SECONDARY_BLUE,
         alignItems: "center",
     },
     defaultText: {
-        color: Colors.white,
+        color: Colors.WHITE,
         paddingHorizontal: 17,
         lineHeight: 25,
         fontSize: 17,
@@ -33,3 +33,18 @@ const styles = StyleSheet.create({
 })
 
 export default DefaultButton
+
+
+{/* 
+    COMPONENT EXAMPLE
+    
+    <DefaultModal 
+    modalVisible={true}
+    title={'Para poder ver u ofertar, tenés que agregar un medio de pago'}
+    options={['Cancelar', 'Agregar']}
+    actions={[
+        () => {console.log('Confirm pressed')},
+        () => {console.log('Close pressed')}
+    ]}
+    /> 
+*/}

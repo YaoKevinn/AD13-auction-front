@@ -22,15 +22,15 @@ import DrawerContent from "../components/DrawerContent";
 
 const defaultStackNavOptions = {
     headerStyle: {
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.PRIMARY_BLUE,
     },
     headerTitleStyle: {
-        fontFamily: "poppins-regular",
+        fontFamily: "poppins-400",
     },
     headerBackTitleStlye: {
-        fontFamily: "poppins-regular",
+        fontFamily: "poppins-400",
     },
-    headerTintColor: Colors.white,
+    headerTintColor: Colors.WHITE,
 };
 
 const HomeStackNavigator = createStackNavigator(

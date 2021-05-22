@@ -28,25 +28,28 @@ const DefaultModal = (props) => {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>{props.title}</Text>
             <View style={styles.buttonSection}>
-            {
-                props.options.map( (option, i) => {
-                    return (
-                        <TouchableOpacity
-                            key={i}
-                            style={[styles.button, styles.buttonClose]}
-                            onPress={() => {
-                                hideModal();
-                                props.actions[i]();
-                            }}
-                            activeOpacity={0.6}
-                            
-                        >
-                            <Text style={styles.textStyle}>{option}</Text>
-                        </TouchableOpacity>
-                    )
-                })
-
-            }
+                <TouchableOpacity
+                    style={{...styles.button, ...styles.buttonClose}}
+                    onPress={() => {
+                        hideModal();
+                        props.actions[0]();
+                    }}
+                    activeOpacity={0.6}
+                    
+                >
+                    <Text style={styles.textStyle}>{props.options[0]}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                        hideModal();
+                        props.actions[1]();
+                    }}
+                    activeOpacity={0.6}
+                    
+                >
+                    <Text style={styles.textStyle}>{props.options[1]}</Text>
+                </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -77,7 +80,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 33,
     alignItems: "center",
-    shadowColor: Colors.black,
+    shadowColor: Colors.BLACK,
     shadowOffset: {
       width: 0,
       height: 2
@@ -94,22 +97,25 @@ const styles = StyleSheet.create({
     width: '100%'
   },    
   button: {
-    backgroundColor: Colors.black,
+    backgroundColor: Colors.PRIMARY_BLUE,
     padding: 9,
     flexDirection: 'row',
     justifyContent: 'center',
     width: '45%'
   },
+  buttonClose: {
+      backgroundColor: Colors.PRIMARY_RED
+  },
   textStyle: {
     color: "white",
-    fontFamily: 'poppins-regular',
+    fontFamily: 'poppins-400',
     fontSize: 17
   },
   modalText: {
     textAlign: 'center',
     marginBottom: 40,
     fontSize: 17,
-    fontFamily: 'poppins-regular'
+    fontFamily: 'poppins-400'
   }
 });
 

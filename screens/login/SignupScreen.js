@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     mainTitle: {
         fontSize: 22,
         lineHeight: 30,
-        fontFamily: "poppins-bold",
+        fontFamily: "poppins-700",
         marginBottom: 60,
     },
     input: {
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         padding: 20,
         borderWidth: 1,
-        borderColor: Colors.black,
+        borderColor: Colors.BLACK,
     },
     recoverBtnText: {
         fontSize: 17,

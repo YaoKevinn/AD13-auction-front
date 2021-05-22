@@ -8,7 +8,7 @@ import Colors from '../constants/Colors';
 const DrawerContent = props => {
 
     return (
-        <View style={{flex: 1}}>
+        <View style={styles.drawer}>
             <TouchableOpacity 
                 onPress={ ()=>{ props.navigation.navigate('Home') } } 
                 activeOpacity={0.5}
@@ -69,6 +69,10 @@ const DrawerContent = props => {
 }
 
 const styles = StyleSheet.create({
+    drawer: {
+        flex: 1,
+        paddingTop: '15%'
+    },
     button: {
         flexDirection: 'row',
         justifyContent: 'space-between',

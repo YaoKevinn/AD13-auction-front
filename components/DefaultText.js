@@ -12,7 +12,7 @@ const DefaultText = props => {
 
 const styles = StyleSheet.create({
     text: {
-        fontFamily: 'poppins-regular'
+        fontFamily: 'poppins-400'
     }
 })
 

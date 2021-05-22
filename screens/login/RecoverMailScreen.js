@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         padding: 20,
         borderWidth: 1,
-        borderColor: Colors.black,
+        borderColor: Colors.BLACK,
     },
     recoverBtnText: {
         fontSize: 17,
