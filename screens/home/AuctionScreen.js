@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
 AuctionScreen.navigationOptions = (navData) => {
     return {
         headerTitle: '',
-        headerBackground: (
+        headerBackground: () => (
             <ImageBackground
                 style={styles.headerBackground}
                 source={{ uri: 'https://www.outfit4events.com/underwood/download/images/thorovo-kladivo-1.jpg' }}

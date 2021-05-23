@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Image, ImageBackground, TouchableOpacity, SafeAreaView } from 'react-native';
 
 import DefaultText from '../../components/DefaultText';
 import DefaultButton from '../../components/DefaultButton';
+import DefaultModal from '../../components/DefaultModal';
+import OfferSuccessModal from '../../components/OfferSuccessModal';
 import Colors from '../../constants/Colors';
 
 const AuctionItemScreen = props => {
 
-    const [ inputAmount, setInputAmount ] = useState(0);
+    const [ inputAmount, setInputAmount ] = useState("0");
     const [ currentPercentage, setCurrentPercentage ] = useState(0);
+    const [ openModal, setOpenModal ] = useState(false);
+    const [ opeOfferSuccessModal, setOpeOfferSuccessModal ] = useState(false);
 
     const setPriceText = (text) => {
         console.log(text, typeof text);
@@ -90,7 +94,31 @@ const AuctionItemScreen = props => {
                     </TouchableOpacity>
                 </View>
 
-                <DefaultButton style={styles.button}>Ofertar</DefaultButton>
+                <DefaultButton 
+                    style={styles.button} 
+                    onPress={() => {
+                        setOpenModal(true);
+                        console.log('open modal: ', openModal);
+                    }}
+                >
+                    Ofertar
+                </DefaultButton>
+                <DefaultModal 
+                    title={'Oferta hecha con éxito!'}
+                    modalVisible={openModal}
+                    options={['Aceptar']}
+                    actions={[() => {
+                        setOpenModal(false);
+                        setOpeOfferSuccessModal(true);
+                    }]}
+                />
+                <OfferSuccessModal 
+                    modalVisible={opeOfferSuccessModal}
+                    onPress={() => {
+                        setOpeOfferSuccessModal(false);
+                        props.navigation.goBack();
+                    }}
+                />
 
             </View>
         </View>
@@ -101,21 +129,32 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         backgroundColor: Colors.WHITE,
-        paddingTop: 180
+        paddingTop: 170,
+        overflow: 'visible'
     },
     // HEADER
+    overlay: {
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'flex-end',
+        paddingVertical: 27,
+        paddingHorizontal: 17
+    },
     headerBackground: {
         width: '100%',
         height: 260,
-        backgroundColor: 'rgba(0,0,0,0.6)'
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        zIndex: 0
     },
     // MAIN
     detailSection: {
-        height: 530,
+        flex: 1,
         paddingVertical: 37,
         paddingHorizontal: 20,
         justifyContent: 'flex-start',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: Colors.WHITE,
     },
     especification: {
         justifyContent: 'space-between',
@@ -187,7 +226,8 @@ const styles = StyleSheet.create({
         color: '#666'
     },
     selectedNumberText: {
-        color: '#75b9f7',
+        // color: '#75b9f7',
+        color: Colors.PRIMARY_RED,
         fontFamily: 'poppins-700'
     },
     selected: {
@@ -195,18 +235,22 @@ const styles = StyleSheet.create({
         height: 25,
         borderTopWidth: 10,
         alignItems: 'center',
-        borderColor: '#75b9f7',
+        // borderColor: '#75b9f7',
+        borderColor: Colors.PRIMARY_RED
     }
 })
 
 AuctionItemScreen.navigationOptions = (navData) => {
+
     return {
         headerTitle: '',
-        headerBackground: (
+        headerBackground: () => (
             <ImageBackground
                 style={styles.headerBackground}
                 source={{ uri: 'https://i.etsystatic.com/12182965/r/il/11e980/2001588984/il_570xN.2001588984_qtts.jpg' }}
             >
+                  {/* <View style={modalOpened ? styles.overlay : null}>
+                </View> */}
             </ImageBackground> 
         ),
     }

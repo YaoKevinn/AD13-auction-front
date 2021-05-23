@@ -7,8 +7,8 @@ import DefaultText from './DefaultText';
 const DefaultButton = (props) => {
 
     return (
-        <TouchableOpacity {...props} activeOpacity={0.6}>
-            <View style={styles.button}>
+        <TouchableOpacity style={styles.container} onPress={props.onPress} activeOpacity={0.6}>
+            <View style={{...styles.button, ...props.style}}>
                 <DefaultText style={styles.defaultText}>
                     { props.children }
                 </DefaultText>
@@ -18,6 +18,9 @@ const DefaultButton = (props) => {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        width: '100%'
+    },
     button: {
         paddingVertical: 15,
         backgroundColor: Colors.SECONDARY_BLUE,

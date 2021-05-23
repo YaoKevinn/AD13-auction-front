@@ -16,6 +16,7 @@ import UserHistoryScreen from "../screens/userHistory/UserHistoryScreen";
 import RecoverMailScreen from "../screens/login/RecoverMailScreen";
 import SignupValidationPendingScreen from "../screens/login/SignupValidationPendingScreen";
 import RecoverPasswordEmailSentScreen from "../screens/login/RecoverPasswordEmailSentScreen";
+import OfferSuccessScreen from '../screens/home/OfferSuccessScreen';
 
 import Colors from "../constants/Colors";
 import DrawerContent from "../components/DrawerContent";
@@ -38,6 +39,7 @@ const HomeStackNavigator = createStackNavigator(
         AuctionItemScreen: { screen: AuctionItemScreen },
         AuctionScreen: { screen: AuctionScreen },
         HomeScreen: { screen: HomeScreen },
+        OfferSuccessScreen: { screen: OfferSuccessScreen }
     },
     {
         defaultNavigationOptions: defaultStackNavOptions,

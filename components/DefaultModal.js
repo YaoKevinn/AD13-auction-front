@@ -5,51 +5,47 @@ import Colors from "../constants/Colors";
 
 const DefaultModal = (props) => {
 
-  const [ modalVisible, setModalVisible ] = useState(props.modalVisible)
-   
-  const hideModal = () => {
-    setModalVisible(false);
-  }
-
   return (
     <ImageBackground 
-        style={ modalVisible ? styles.modalAppearView : {}}
+        style={ props.modalVisible ? styles.modalAppearView : {}}
     >
        <Modal
         animationType="fade"
+        visible={props.modalVisible}
         transparent={true}
-        visible={modalVisible}
+        presentationStyle="overFullScreen"
         onRequestClose={() => {
           Alert.alert("Modal has been closed.");
-          hideModal();
         }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>{props.title}</Text>
             <View style={styles.buttonSection}>
-                <TouchableOpacity
-                    style={{...styles.button, ...styles.buttonClose}}
-                    onPress={() => {
-                        hideModal();
-                        props.actions[0]();
-                    }}
-                    activeOpacity={0.6}
-                    
-                >
-                    <Text style={styles.textStyle}>{props.options[0]}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                        hideModal();
-                        props.actions[1]();
-                    }}
-                    activeOpacity={0.6}
-                    
-                >
-                    <Text style={styles.textStyle}>{props.options[1]}</Text>
-                </TouchableOpacity>
+                {
+                    props.options[0] ? (
+                        <TouchableOpacity
+                            style={props.options.length === 2 ? styles.buttonClose : styles.button }
+                            onPress={() => props.actions[0]()}
+                            activeOpacity={0.6}
+                            
+                        >
+                            <Text style={styles.textStyle}>{props.options[0]}</Text>
+                        </TouchableOpacity>
+                    ) : null
+                }
+                {
+                    props.options[1] ? (
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => props.actions[1]()}
+                            activeOpacity={0.6}
+                            
+                        >
+                            <Text style={styles.textStyle}>{props.options[1]}</Text>
+                        </TouchableOpacity>
+                    ) : null
+                }
             </View>
           </View>
         </View>
@@ -68,12 +64,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)'
+    opacity: 0.2,
+    zIndex: 5
   },
   centeredView: {
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   modalView: {
     backgroundColor: "white",
@@ -97,14 +95,18 @@ const styles = StyleSheet.create({
     width: '100%'
   },    
   button: {
-    backgroundColor: Colors.PRIMARY_BLUE,
+    backgroundColor: Colors.SECONDARY_BLUE,
     padding: 9,
     flexDirection: 'row',
     justifyContent: 'center',
     width: '45%'
   },
   buttonClose: {
-      backgroundColor: Colors.PRIMARY_RED
+      backgroundColor: Colors.PRIMARY_RED,
+      padding: 9,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      width: '45%'
   },
   textStyle: {
     color: "white",
