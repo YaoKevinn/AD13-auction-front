@@ -4,7 +4,7 @@ import { Text, View, StyleSheet } from 'react-native'
 const Divider = (props) => {
 
         return (
-            <View style={{...props.style, ...styles.divider}}></View>
+            <View style={{...styles.divider, ...props.style}}></View>
         )
 }
 

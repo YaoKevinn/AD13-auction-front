@@ -7,12 +7,14 @@ import Colors from '../../constants/Colors';
 import DefaultText from "../../components/DefaultText";
 import DefaultButton from "../../components/DefaultButton";
 import DefaultTextInput from "../../components/DefaultTextInput";
+import RecoverMailSentModal from "../../components/RecoverMailSentModal";
 import Divider from "../../components/Divider";
 
 
 const RecoverMailScreen = props => {
 
-    const [mailInput, setMailInput] = useState("");
+    const [ mailInput, setMailInput ] = useState("");
+    const [ recoverMailSentModalOpen, setRecoverMailSentModalOpen ] = useState(false);
  
     return (
         <View style={styles.screen}>
@@ -25,7 +27,7 @@ const RecoverMailScreen = props => {
             />
             <DefaultButton
                 onPress={() => {
-                    props.navigation.navigate('RecoverPasswordEmailSentScreen');
+                    setRecoverMailSentModalOpen(true);
                 }}
             >
                 Recuperar contraseña
@@ -49,6 +51,15 @@ const RecoverMailScreen = props => {
                     <Ionicons name="ios-arrow-forward" size={24} />
                 </View>
             </TouchableOpacity>
+
+            {/* Recover Password mail sent modal */}
+            <RecoverMailSentModal 
+                modalVisible={recoverMailSentModalOpen}
+                onPress={() => {
+                    setRecoverMailSentModalOpen(false);
+                    props.navigation.goBack();
+                }}
+            />
         </View>
     )
 }

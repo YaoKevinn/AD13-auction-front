@@ -10,6 +10,14 @@ const DrawerContent = props => {
     return (
         <View style={styles.drawer}>
             <TouchableOpacity 
+                onPress={ ()=>{ props.navigation.navigate('Login') } } 
+                activeOpacity={0.5}
+            >
+                <View style={{...styles.button, ...styles.loginButton}}>
+                    <DefaultText style={styles.loginButtonText}>Iniciar sesión</DefaultText>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity 
                 onPress={ ()=>{ props.navigation.navigate('Home') } } 
                 activeOpacity={0.5}
             >
@@ -54,15 +62,6 @@ const DrawerContent = props => {
                     <DefaultText style={styles.arrow}>{'>'}</DefaultText>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity 
-                onPress={ ()=>{ props.navigation.navigate('Login') } } 
-                activeOpacity={0.5}
-            >
-                <View style={styles.button}>
-                    <DefaultText>Iniciar sesión</DefaultText>
-                    <DefaultText style={styles.arrow}>{'>'}</DefaultText>
-                </View>
-            </TouchableOpacity>
         </View>
     )
 
@@ -83,6 +82,14 @@ const styles = StyleSheet.create({
         borderColor: Colors.black,
         marginHorizontal: 18,
         marginVertical: 15
+    },
+    loginButton: {
+        justifyContent: 'center', 
+        backgroundColor: Colors.SECONDARY_BLUE,
+        borderColor: Colors.SECONDARY_BLUE
+    },
+    loginButtonText: {
+        color: Colors.WHITE
     },
     arrow: {
         position: 'absolute',

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Ionicons } from "@expo/vector-icons";
 
 import DefaultText from '../components/DefaultText';
 import Colors from '../constants/Colors';
@@ -9,10 +10,10 @@ const ArticleCard = (props) => {
     const [ userLoggedIn, setUserLoggedIn ] = useState(true);
 
     return (
-        <View style={styles.cardContainer}>
+        <View style={ styles.cardContainer }>
             <Image 
                 style={styles.productImage}
-                source={{uri: 'https://i.etsystatic.com/12182965/r/il/11e980/2001588984/il_570xN.2001588984_qtts.jpg'}} 
+                source={{uri: 'https://i.etsystatic.com/12182965/r/il/11e980/2001588984/il_570xN.2001588984_qtts.jpg'}}
             />
             <View style={styles.productDetail}>
                 <View style={styles.productHeader}>
@@ -49,6 +50,16 @@ const ArticleCard = (props) => {
                     )
                 }
             </View>
+            { 
+                !props.isAvailable ? (
+                    <View style={styles.overlay}>
+                        <View style={styles.overlayTextContainer}>
+                            <DefaultText style={styles.overlayText}>Vendido</DefaultText>
+                            {/* <Ionicons name="md-checkmark-sharp" size={30} color={Colors.WHITE} /> */}
+                        </View>
+                    </View>
+                ) : null
+            }
         </View>
     )
 }
@@ -57,7 +68,32 @@ const styles = StyleSheet.create({
     cardContainer: {
         width: '100%',
         height: 337,
-        marginBottom: 35 
+        marginBottom: 35,
+        position: 'relative',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    },
+    overlay: {
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },  
+    overlayText: {
+        color: Colors.WHITE,
+        fontSize: 30,
+        marginRight: 5
+    },
+    overlayTextContainer: {
+        paddingHorizontal: 15,
+        paddingVertical: 5,
+        backgroundColor: Colors.PRIMARY_RED,
+        borderRadius: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transform: [{ rotate: "-8deg" }]
     },
     productImage: {
         width: '100%',
@@ -107,7 +143,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.SECONDARY_BLUE,
         paddingVertical: 5,
         paddingHorizontal: 12,
-        borderRadius: 20
+        borderRadius: 5
     },
     buttonText: {
         color: Colors.WHITE

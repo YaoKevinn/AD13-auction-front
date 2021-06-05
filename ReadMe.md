@@ -10,6 +10,7 @@
 * npm install --save react-navigation-drawer
 * npm install --save react-navigation-header-buttons@6
 * npm install --save @react-native-community/blur
+* npm install react-native-elements
 
 * npm install
 

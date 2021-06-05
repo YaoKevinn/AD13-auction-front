@@ -17,6 +17,7 @@ import RecoverMailScreen from "../screens/login/RecoverMailScreen";
 import SignupValidationPendingScreen from "../screens/login/SignupValidationPendingScreen";
 import RecoverPasswordEmailSentScreen from "../screens/login/RecoverPasswordEmailSentScreen";
 import OfferSuccessScreen from '../screens/home/OfferSuccessScreen';
+import NewPaymentScreen from '../screens/payMethod/NewPaymentScreen';
 
 import Colors from "../constants/Colors";
 import DrawerContent from "../components/DrawerContent";
@@ -60,6 +61,7 @@ const ProfileStackNavigator = createStackNavigator(
 const PayMethodStackNavigator = createStackNavigator(
     {
         PayMethodScreen: { screen: PayMethodScreen },
+        NewPaymentScreen: { screen: NewPaymentScreen }
     },
     {
         defaultNavigationOptions: defaultStackNavOptions,

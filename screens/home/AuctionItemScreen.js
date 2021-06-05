@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, TextInput, Image, ImageBackground, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Image, ImageBackground, TouchableOpacity, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import DefaultText from '../../components/DefaultText';
 import DefaultButton from '../../components/DefaultButton';
@@ -28,9 +28,14 @@ const AuctionItemScreen = props => {
     }
 
     return (
-        <View style={styles.screen}>
-            <View style={styles.detailSection}>
+        <KeyboardAvoidingView 
+            style={styles.screen}
+            behavior="position"
+        >
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss() } style={styles.detailSection}>
+                <ScrollView style={styles.scroll}>
 
+                
                 <View style={styles.headerRow}>
                     <DefaultText style={styles.title}>Descripción</DefaultText>
                     <DefaultText style={styles.title}>Nº Pieza: 123456</DefaultText>
@@ -119,9 +124,9 @@ const AuctionItemScreen = props => {
                         props.navigation.goBack();
                     }}
                 />
-
-            </View>
-        </View>
+            </ScrollView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     )
 }
 
@@ -150,12 +155,16 @@ const styles = StyleSheet.create({
     // MAIN
     detailSection: {
         flex: 1,
-        paddingVertical: 37,
-        paddingHorizontal: 20,
         justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: Colors.WHITE,
     },
+    scroll: {
+        height: '100%',
+        paddingVertical: 37,
+        paddingHorizontal: 20,
+
+    },  
     especification: {
         justifyContent: 'space-between',
         marginBottom: 50,
@@ -204,11 +213,13 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     percentages: {
+        alignSelf: 'center',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         width: 230,
-        marginBottom: 50
+        overflow: 'visible',
+        marginBottom: 50,
     },
     percentage: {
         width: 55,
@@ -223,12 +234,14 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     numberText: {
-        color: '#666'
+        color: '#666',
+        fontSize: 12
     },
     selectedNumberText: {
         // color: '#75b9f7',
-        color: Colors.PRIMARY_RED,
-        fontFamily: 'poppins-700'
+        color: Colors.PRIMARY_BLUE,
+        fontFamily: 'poppins-700',
+        fontSize: 12
     },
     selected: {
         width: 55,
@@ -236,7 +249,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 10,
         alignItems: 'center',
         // borderColor: '#75b9f7',
-        borderColor: Colors.PRIMARY_RED
+        borderColor: Colors.SECONDARY_BLUE
     }
 })
 

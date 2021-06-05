@@ -29,11 +29,11 @@ const AuctionScreen = props => {
             </View>
             {/* PRODUCT CARDS */}
             <View style={styles.productItemSection}>
-                <ArticleCard navigation={props.navigation} />
-                <ArticleCard navigation={props.navigation} />
-                <ArticleCard navigation={props.navigation} />
-                <ArticleCard navigation={props.navigation} />
-                <ArticleCard navigation={props.navigation} />
+                <ArticleCard navigation={props.navigation} isAvailable={true} />
+                <ArticleCard navigation={props.navigation} isAvailable={true} />
+                <ArticleCard navigation={props.navigation} isAvailable={true} />
+                <ArticleCard navigation={props.navigation} isAvailable={false} />
+                <ArticleCard navigation={props.navigation} isAvailable={false} />
             </View>
             <View style={styles.footer}>
                 <DefaultText style={styles.footerText}>No hay más producto para esta subasta</DefaultText>
