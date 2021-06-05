@@ -18,6 +18,8 @@ import SignupValidationPendingScreen from "../screens/login/SignupValidationPend
 import RecoverPasswordEmailSentScreen from "../screens/login/RecoverPasswordEmailSentScreen";
 import OfferSuccessScreen from '../screens/home/OfferSuccessScreen';
 import NewPaymentScreen from '../screens/payMethod/NewPaymentScreen';
+import CreditCardScreen from '../screens/payMethod/CreditCardScreen';
+import BankAccountScreen from '../screens/payMethod/BankAccountScreen';
 
 import Colors from "../constants/Colors";
 import DrawerContent from "../components/DrawerContent";
@@ -61,7 +63,9 @@ const ProfileStackNavigator = createStackNavigator(
 const PayMethodStackNavigator = createStackNavigator(
     {
         PayMethodScreen: { screen: PayMethodScreen },
-        NewPaymentScreen: { screen: NewPaymentScreen }
+        NewPaymentScreen: { screen: NewPaymentScreen },
+        CreditCardScreen: { screen: CreditCardScreen },
+        BankAccountScreen: { screen: BankAccountScreen },
     },
     {
         defaultNavigationOptions: defaultStackNavOptions,

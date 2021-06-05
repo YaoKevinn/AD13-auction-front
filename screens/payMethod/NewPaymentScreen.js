@@ -11,13 +11,17 @@ const NewPaymentScreen = props => {
     return (
         <View style={styles.screen}>
             <DefaultText style={styles.title}>Elegí un medio de pago: </DefaultText>
-            <TouchableOpacity activeOpacity={0.6} style={styles.button}>
+            <TouchableOpacity activeOpacity={0.6} style={styles.button} onPress={() => {
+                props.navigation.navigate('CreditCardScreen');
+            }}>
                 <Ionicons name="ios-card-outline" size={24} color={Colors.WHITE}/>
                 <View style={styles.buttonTextSection}>
                     <DefaultText style={styles.buttonText}>Tarjeta de crédito</DefaultText>
                 </View>
             </TouchableOpacity>            
-            <TouchableOpacity activeOpacity={0.6} style={styles.button}>
+            <TouchableOpacity activeOpacity={0.6} style={styles.button} onPress={() => {
+                props.navigation.navigate('BankAccountScreen');
+            }}>
                 <MaterialIcons name="account-balance" size={24} color={Colors.WHITE} />
                 <View style={styles.buttonTextSection}>
                     <DefaultText style={styles.buttonText}>Cuenta bancaria</DefaultText>
