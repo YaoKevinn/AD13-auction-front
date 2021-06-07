@@ -6,33 +6,46 @@ import DefaultText from './DefaultText';
 
 const AuctionListItem = (props) => {
 
+    getDateTime = (dateString) => {
+        const dateTime = new Date(dateString);
+        const minute = dateTime.getMinutes();
+        return (dateTime.toLocaleDateString() + ' - ' + dateTime.getHours() + ":" + (minute < 10 ? `0${minute}` : minute) );
+    }
 
-    return (
-        <TouchableOpacity 
-            activeOpacity={0.7} 
-            style={styles.itemContainer}
-            onPress={props.onPress}
-        >
-            <Image 
-                style={styles.itemImage}
-                source={{uri: 'https://www.outfit4events.com/underwood/download/images/thorovo-kladivo-1.jpg'}} 
-            />
-            <View style={styles.auctionDetail}>
-                <DefaultText style={styles.auctionTitle}>Guitarras de colección</DefaultText>
-                <View style={styles.timeSection}>
-                    <DefaultText style={styles.auctionTime}>Comienza: Ene 15, 09:00hs</DefaultText>
-                    <DefaultText style={styles.auctionTime}>Finaliza: Ene 15, 11:00hs</DefaultText>
-                </View>
-                <View style={styles.status}>
-                    <DefaultText style={styles.currency}>Común - ARS</DefaultText>
-                    <View style={styles.liveIndicator}>
-                        <DefaultText style={styles.liveText}>En vivo</DefaultText>
+    if ( props.auction ) {
+        return (
+            <TouchableOpacity 
+                activeOpacity={0.7} 
+                style={styles.itemContainer}
+                onPress={props.onPress}
+            >
+                <Image 
+                    style={styles.itemImage}
+                    source={{uri: props.auction.imagen}} 
+                    resizeMode="contain"
+                />
+                <View style={styles.auctionDetail}>
+                    <DefaultText style={styles.auctionTitle}>{props.auction.nombre}</DefaultText>
+                    <View style={styles.timeSection}>
+                        <DefaultText style={styles.auctionTime}>Comienza: {getDateTime(props.auction.inicio)}</DefaultText>
+                        <DefaultText style={styles.auctionTime}>Finaliza: {getDateTime(props.auction.fin)}</DefaultText>
+                    </View>
+                    <View style={styles.status}>
+                        <DefaultText style={styles.currency}>{props.auction.categoria} - {props.auction.moneda}</DefaultText>
+                        {
+                            props.auction.estado === 'abierta' ? 
+                            <View style={styles.liveIndicator}>
+                                <DefaultText style={styles.liveText}>En vivo</DefaultText>
+                            </View> : null
+                        }
                     </View>
                 </View>
-            </View>
-        </TouchableOpacity>
-    )
-    
+            </TouchableOpacity>
+        )
+    } else {
+        return null;
+    }
+
 }
 
 const styles = StyleSheet.create({
@@ -53,7 +66,7 @@ const styles = StyleSheet.create({
     },
     itemImage: {
         width: 130,
-        height: 130
+        height: 130,
     },
     auctionTitle: {
         fontFamily: 'poppins-400',

@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Ionicons } from "@expo/vector-icons";
+import { useSelector, useDispatch } from 'react-redux';
+import * as authActions from '../../store/actions/auth';
 
 import HeaderButton from "../../components/HeaderButton";
 import Colors from "../../constants/Colors";
@@ -17,7 +19,11 @@ import DefaultButton from "../../components/DefaultButton";
 import DefaultTextInput from "../../components/DefaultTextInput";
 import Divider from "../../components/Divider";
 
+
 const LoginScreen = (props) => {
+
+    const dispatch = useDispatch();
+    
     const [mailEntered, setMailEntered] = useState(false);
     const [mailInput, setMailInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
@@ -29,6 +35,10 @@ const LoginScreen = (props) => {
     const goToSignupScreen = () => {
         props.navigation.navigate("SignupScreen");
     };
+
+    const login = () => {
+        dispatch(authActions.login(mailInput, passwordInput));
+    }
 
     return (
         <View style={styles.screen}>
@@ -50,7 +60,9 @@ const LoginScreen = (props) => {
                 ) : null
             }
             <DefaultButton
-                onPress={() => setMailEntered(true)}
+                onPress={() => {
+                    mailEntered ? login() : setMailEntered(true)
+                }}
             >
                 Iniciá sesión
             </DefaultButton>

@@ -6,10 +6,20 @@ import * as Font from 'expo-font';
 
 import DefaultText from './components/DefaultText';
 import MainNavigator from './navigation/MainNavigator';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';
+import auctionsReducer from './store/reducers/auctions';
+
+import Colors from './constants/Colors';
 
 
 enableScreens();
+
+const rootReducer = combineReducers({
+    auctions: auctionsReducer
+});
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk))
 
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -40,10 +50,12 @@ export default function App() {
     }
 
   return (
-      <View style={styles.mainView}>
-            <StatusBar backgroundColor="#3E568E" barStyle="light-content"/>
-            <MainNavigator />
-      </View>
+      <Provider store={store}>
+            <View style={styles.mainView}>
+                    <StatusBar backgroundColor="#3E568E" barStyle="light-content"/>
+                    <MainNavigator />
+            </View>
+       </Provider>
   );
 }
 

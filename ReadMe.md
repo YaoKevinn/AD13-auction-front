@@ -12,6 +12,8 @@
 * npm install --save @react-native-community/blur
 * npm install react-native-elements
 * npm i react-native-flip-card
+* npm install --save redux react-redux 
+* npm install --save redux-thunk
 
 * npm install
 

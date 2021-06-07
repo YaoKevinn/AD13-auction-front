@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native';
 
 import DefaultText from '../../components/DefaultText';
@@ -6,6 +6,13 @@ import Colors from '../../constants/Colors';
 import ArticleCard from '../../components/ArticleCard';
 
 const AuctionScreen = props => {
+
+    const auctionId = props.navigation.getParam('auctionId');
+    console.log(auctionId)
+
+    useEffect(() => {
+        dispatch(auctionsActions.fetchAllProductsByAuctionId(auctionId));
+    }, [dispatch])
 
     return (
         <ScrollView style={styles.screen}>
