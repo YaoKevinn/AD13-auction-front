@@ -13,7 +13,9 @@ const SignupValidationPendingScreen = () => {
                 <Text style={styles.mailIcon}>✉</Text>
                 <DefaultText style={styles.primaryText}>Estás en proceso de validación de cuenta</DefaultText>
                 <DefaultText style={styles.secondaryText}>En cuanto lo hagamos, te enviaremos un mail para que continues con el registro</DefaultText>
-                <DefaultButton style={styles.button} onPress={()=>{}}>
+                <DefaultButton style={styles.button} onPress={()=>{
+                    props.navigation.popToTop();
+                }}>
                     Finalizar
                 </DefaultButton>
             </View>

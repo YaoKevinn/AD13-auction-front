@@ -54,9 +54,10 @@ const SignupScreen = props => {
                     Documento: documentInput, 
                     FechaNacimiento: transformedDate
                 })
-            }).then( res => {
-                const resData = res.json();
-                console.log(resData);
+            })
+            .then( res => res.json())
+            .then( data => {
+                console.log(data);
                 props.navigation.navigate('SignupValidationPendingScreen');
             }).catch( err => console.log(err));
 

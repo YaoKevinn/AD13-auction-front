@@ -1,22 +1,40 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Text, View, Button, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-navigation';
-import DefaultText from './DefaultText';
+import { useSelector } from 'react-redux';
 
+import DefaultModal from './DefaultModal';
+import DefaultText from './DefaultText';
 import Colors from '../constants/Colors';
+import { FontAwesome } from '@expo/vector-icons'; 
+
 
 const DrawerContent = props => {
 
+    const userLoggedIn = useSelector(state => state.auth.userLoggedIn);
+    const loggedUser = useSelector(state => state.auth.loggedUser);
+
+    const [ modalOpen, setModalOpen ] = useState(false)
+
     return (
         <View style={styles.drawer}>
-            <TouchableOpacity 
-                onPress={ ()=>{ props.navigation.navigate('Login') } } 
-                activeOpacity={0.5}
-            >
-                <View style={{...styles.button, ...styles.loginButton}}>
-                    <DefaultText style={styles.loginButtonText}>Iniciar sesión</DefaultText>
-                </View>
-            </TouchableOpacity>
+            {
+                !userLoggedIn ? (
+                    <TouchableOpacity 
+                        onPress={ ()=>{ props.navigation.navigate('Login') } } 
+                        activeOpacity={0.5}
+                    >
+                        <View style={{...styles.button, ...styles.loginButton}}>
+                            <DefaultText style={styles.loginButtonText}>Iniciar sesión</DefaultText>
+                        </View>
+                    </TouchableOpacity>
+                ) : (
+                    <View style={styles.profile}>
+                        <FontAwesome name="user-circle-o" size={60} color={Colors.PRIMARY_BLUE} />
+                        <DefaultText>{loggedUser.nombre} {loggedUser.apellido}</DefaultText>
+                        <DefaultText>{loggedUser.categoria}</DefaultText>
+                    </View>
+                )
+            }
             <TouchableOpacity 
                 onPress={ ()=>{ props.navigation.navigate('Home') } } 
                 activeOpacity={0.5}
@@ -36,7 +54,13 @@ const DrawerContent = props => {
                 </View>
             </TouchableOpacity>
             <TouchableOpacity 
-                onPress={ ()=>{ props.navigation.navigate('PayMethod') } } 
+                onPress={ ()=>{ 
+                    if ( userLoggedIn ) {
+                        props.navigation.navigate('PayMethod') 
+                    } else {
+                        setModalOpen(true);
+                    }
+                }} 
                 activeOpacity={0.5}
             >
                 <View style={styles.button}>
@@ -62,6 +86,14 @@ const DrawerContent = props => {
                     <DefaultText style={styles.arrow}>{'>'}</DefaultText>
                 </View>
             </TouchableOpacity>
+            <DefaultModal 
+                title="Para ver tus métodos de pago, necesitás iniciar sesión primero."
+                modalVisible={modalOpen}
+                options={['Confirmar']}
+                actions={[() => {
+                    setModalOpen(false);
+                }]}
+            />
         </View>
     )
 
@@ -71,6 +103,11 @@ const styles = StyleSheet.create({
     drawer: {
         flex: 1,
         paddingTop: '15%'
+    },
+    profile: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 100
     },
     button: {
         flexDirection: 'row',

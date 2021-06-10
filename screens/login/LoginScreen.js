@@ -8,14 +8,17 @@ import {
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Ionicons } from "@expo/vector-icons";
+import { AntDesign } from '@expo/vector-icons'; 
 import { useSelector, useDispatch } from 'react-redux';
 import * as authActions from '../../store/actions/auth';
 
 import HeaderButton from "../../components/HeaderButton";
 import Colors from "../../constants/Colors";
+import Urls from "../../constants/Urls";
 
 import DefaultText from "../../components/DefaultText";
 import DefaultButton from "../../components/DefaultButton";
+import DefaultModal from "../../components/DefaultModal";
 import DefaultTextInput from "../../components/DefaultTextInput";
 import Divider from "../../components/Divider";
 
@@ -24,9 +27,12 @@ const LoginScreen = (props) => {
 
     const dispatch = useDispatch();
     
+    const [statusIcon, setStatusIcon] = useState(undefined);
     const [mailEntered, setMailEntered] = useState(false);
     const [mailInput, setMailInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
+    const [errorModalOpen, setErrorModalOpen] = useState(false);
+    const [errorModalMessage, setErrorModalMessage] = useState('');
 
     const goToRecoverPasswordScreen = () => {
         props.navigation.navigate("RecoverMailScreen");
@@ -37,18 +43,63 @@ const LoginScreen = (props) => {
     };
 
     const login = () => {
-        dispatch(authActions.login(mailInput, passwordInput));
+        dispatch(authActions.login(mailInput, passwordInput, props.navigation, openErrorModal));
     }
+
+    const openErrorModal = (message) => {
+        setErrorModalOpen(true);
+        setErrorModalMessage(message);
+    }
+
+    const checkUserMailStatus = () => {
+        if ( mailInput !== '' ) {
+            fetch( Urls.BASE_API_URL + `/verificarEstadoUsuario/${mailInput}`, {
+                method: 'GET',
+                header: { 'Content-Type': 'application/json' },
+            })
+            .then( res => res.json())
+            .then( data => {
+                // Object {
+                //     "admitido": "no",
+                //     "recuperarcontrasenia": false,
+                // }
+                
+                console.log('ÉXITO: API /verificarEstadoUsuario/{mail} Chechear estado del mail');
+                if ( data.admitido === "no" ) {
+                    console.log('Cuenta NO validada.')
+                    setStatusIcon('exclamationcircle');
+                    props.navigation.navigate('SignupValidationPendingScreen');
+                } else if ( data.admitido === "si" && data.recuperarcontrasenia ) {
+                    console.log('Cuenta validada para recuperar contrasenña');
+                    setStatusIcon('checkcircle');
+                    props.navigation.navigate('GenerateNewPasswordScreen', {
+                        userMail: mailInput
+                    });
+                } else if ( data.admitido === "si" && !data.recuperarcontrasenia ) {
+                    setStatusIcon('checkcircle');
+                    setMailEntered(true);
+                }
+            }).catch( err => console.log( 'FALLO: API /verificarEstadoUsuario/{mail} Chechear estado del mail =>',  err));   
+        }
+    }
+
 
     return (
         <View style={styles.screen}>
             <DefaultText style={styles.mainTitle}>Iniciar sesión</DefaultText>
-            <DefaultTextInput
-                style={styles.mailInput} 
-                placeholder="Mail"
-                value={mailInput}
-                onChangeText={(text) => setMailInput(text)}
-            />
+            <View style={styles.inputContainer}>
+                <DefaultTextInput
+                    style={styles.mailInput} 
+                    placeholder="Mail"
+                    value={mailInput}
+                    onChangeText={(text) => setMailInput(text)}
+                />
+                {
+                    statusIcon ? (
+                        <AntDesign style={styles.statusIcon} name={statusIcon} size={24} color={statusIcon === 'checkcircle' ? '#07D39B' : 'yellow'} />
+                    ) : null
+                }
+            </View> 
             { 
                 mailEntered ? (
                     <DefaultTextInput 
@@ -56,12 +107,13 @@ const LoginScreen = (props) => {
                         placeholder="Contraseña"
                         value={passwordInput}
                         onChangeText={(text) => setPasswordInput(text)}
+                        secureTextEntry={true}
                     />
                 ) : null
             }
             <DefaultButton
                 onPress={() => {
-                    mailEntered ? login() : setMailEntered(true)
+                    mailEntered ? login() : checkUserMailStatus()
                 }}
             >
                 Iniciá sesión
@@ -89,6 +141,14 @@ const LoginScreen = (props) => {
                     <Ionicons name="ios-arrow-forward" size={24} />
                 </View>
             </TouchableOpacity>
+
+            {/* RESULT MODAL */}
+            <DefaultModal 
+                modalVisible={errorModalOpen}
+                title={errorModalMessage}
+                options={['Confirmar']}
+                actions={[() => setErrorModalOpen(false)]}
+            />
         </View>
     );
 };
@@ -107,6 +167,14 @@ const styles = StyleSheet.create({
     },
     mailInput: {
         marginBottom: 50
+    },
+    inputContainer: {
+        position: 'relative'
+    }, 
+    statusIcon: {
+        position: 'absolute',
+        right: 10,
+        top: 13
     },
     divider: {
         marginVertical: 47,

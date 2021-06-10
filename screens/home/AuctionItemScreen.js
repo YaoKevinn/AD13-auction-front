@@ -1,30 +1,113 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, Image, ImageBackground, TouchableOpacity, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
+import { useSelector, useDispatch } from 'react-redux';
+import * as auctionsActions from '../../store/actions/auctions';
+
 import DefaultText from '../../components/DefaultText';
 import DefaultButton from '../../components/DefaultButton';
 import DefaultModal from '../../components/DefaultModal';
 import OfferSuccessModal from '../../components/OfferSuccessModal';
 import Colors from '../../constants/Colors';
+import Urls from '../../constants/Urls'
+
 
 const AuctionItemScreen = props => {
 
-    const [ inputAmount, setInputAmount ] = useState("0");
+    const dispatch = useDispatch();
+    const loggedUser = useSelector(state => state.auth.loggedUser);
+
+    const product = props.navigation.getParam('product');
+    const currency = props.navigation.getParam('currency');
+    const auctionId = props.navigation.getParam('auctionId');
+
+    const [ inputAmount, setInputAmount ] = useState(0);
     const [ currentPercentage, setCurrentPercentage ] = useState(0);
     const [ openModal, setOpenModal ] = useState(false);
-    const [ opeOfferSuccessModal, setOpeOfferSuccessModal ] = useState(false);
+    const [ openOfferSuccessModal, setOpenOfferSuccessModal ] = useState(false);
+    const [ errorModalOpen, setErrorModalOpen ] = useState(false);
+    const [ errorMessage, setErrorMessage ] = useState(false);
 
-    const setPriceText = (text) => {
-        console.log(text, typeof text);
-        if ( text === "0" || text === "$"  ){
-            setInputAmount('');
-        } else if ( parseFloat(text) > 0 && text.includes('$') ){
-            setInputAmount(text);
-        } else if ( !text.includes('$') ) {
-            setInputAmount('$'+text);
-        } else {
+    const [ timeCounter, setTimeCounter ] = useState(5);
+
+    // const intervalRef = setInterval(  () => {
+    //     if ( timeCounter === 0 ) {
+    //         clearInterval(intervalRef);
+    //     }
+    //     setTimeCounter(timeCounter - 1);
+    //     console.log(timeCounter);
+    // }, 1000)
+
+    const changePriceByPercentage = (percentage) => {
+        setInputAmount( (product.pujaactual + (product.preciobase * percentage)).toFixed(2) );
+    }
+
+    const changePriceByKeyPress = (text) => {
+        if ( !(inputAmount === '' && text === '0') ) {
+            setCurrentPercentage(0);
             setInputAmount(text);
         }
+    }
+
+    const createAnOffer = () => {
+        let minOfferValue = 0;
+        let maxOfferValue = 0;
+        let okForOffer = true;
+        if ( product.preciobase ) {
+            minOfferValue = product.pujaactual + product.preciobase * 0.01;
+            maxOfferValue = product.pujaactual + product.preciobase * 0.2;
+        }
+        if ( inputAmount === '' ) {
+            setErrorModalOpen(true);
+            setErrorMessage('Introduzca un valor para ofertar');
+            okForOffer = false;
+        } else if ( product.preciobase && (parseFloat(inputAmount) < minOfferValue || ( maxOfferValue && parseFloat(inputAmount) > maxOfferValue)) ) {
+            setErrorModalOpen(true);
+            setErrorMessage(`El valor de oferta debe ser entre ${currency} ${minOfferValue.toFixed(2)} y ${currency} ${maxOfferValue.toFixed(2)}`);
+            okForOffer = false;
+        }
+        
+        if ( okForOffer ) {
+            console.log({
+                idProducto: product.identificador,
+                idUsuario: loggedUser.identificador,
+                Importe: parseFloat(inputAmount)
+            })
+            fetch(Urls.BASE_API_URL+'/pujar', {
+                method: 'POST',
+                header: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    idProducto: product.identificador,
+                    idUsuario: loggedUser.identificador,
+                    Importe: parseFloat(inputAmount)
+                })
+            })
+            .then( res => res.json() )
+            .then( data => {
+                console.log('Éxito API /pujar Ofertar producto');
+                console.log(data)
+                if ( data.statusCode && data.statusCode === 204 ) {
+                    setOpenModal(true);
+                    dispatch({type: auctionsActions.UPDATE_PRODUCT_OFFERPRICE, idProducto: product.identificador, importeActual: parseFloat(inputAmount)});
+                    setInputAmount('');
+                    setCurrentPercentage(0)
+                } else if (  data.statusCode && data.statusCode === 405 && data.importeActual ) {
+                    setErrorModalOpen(true);
+                    setErrorMessage(`El valor de oferta es inferior a la actual.`);
+                    dispatch({type: auctionsActions.UPDATE_PRODUCT_OFFERPRICE, idProducto: product.identificador, importeActual: parseFloat(data.importeActual)});
+                } else if ( data.statusCode && data.statusCode === 406 ) {
+                    setErrorModalOpen(true);
+                    setErrorMessage(`Para ofertar es necesario que configures un medio de pago`);
+                } else {
+                    setErrorModalOpen(true);
+                    setErrorMessage(`Error en ofertar el producto, intentá nuevamente`);
+                }
+            })
+            .catch( err => {
+                console.log('Fallo API /pujar Ofertar producto =>', err);
+            })
+        }
+
     }
 
     return (
@@ -38,23 +121,27 @@ const AuctionItemScreen = props => {
                 
                 <View style={styles.headerRow}>
                     <DefaultText style={styles.title}>Descripción</DefaultText>
-                    <DefaultText style={styles.title}>Nº Pieza: 123456</DefaultText>
+                    <DefaultText style={styles.title}>Nº Pieza: {product.identificador}</DefaultText>
                 </View>
 
-                <DefaultText style={styles.description}>Guitarra de colección de 2003, creada por el presitigioso luthiers John Kent en Nueva York. Solo hay 15 ejemplares de esta guitarra, ya que la producción de las mismas fuero por encargo.</DefaultText>
+                <DefaultText style={styles.description}>{ product.esarte ? product.dataarte.historia : product.descripcioncompleta }</DefaultText>
 
                 <View style={styles.especification}>
                     <View style={styles.dataRow}>
                         <DefaultText style={styles.title}>Dueño/a: </DefaultText>
-                        <DefaultText style={styles.data}>María Suárez</DefaultText>
+                        <DefaultText style={styles.data}>{product.nombreduenio}</DefaultText>
                     </View>
                     <View style={styles.dataRow}>
                         <DefaultText style={styles.title}>Precio base: </DefaultText>
-                        <DefaultText style={styles.data}>$77.000</DefaultText>
+                        <DefaultText style={styles.data}>{currency} {product.preciobase}</DefaultText>
                     </View>
                     <View style={styles.dataRow}>
                         <DefaultText style={styles.title}>Oferta actual: </DefaultText>
-                        <DefaultText style={styles.data}>$80.000</DefaultText>
+                        <DefaultText style={styles.data}>{currency} { product.pujaactual || 0 }</DefaultText>
+                    </View>
+                    <View style={styles.dataRow}>
+                        <DefaultText style={styles.title}>Oferta mínima: </DefaultText>
+                        <DefaultText style={styles.data}>{currency} { (product.pujaminima || 0) + product.pujaactual }</DefaultText>
                     </View>
                 </View>
 
@@ -63,36 +150,49 @@ const AuctionItemScreen = props => {
                         style={styles.input} 
                         placeholder="$0"
                         keyboardType="number-pad"
-                        value={inputAmount}
-                        onChangeText={(text) => setPriceText(text)}
+                        value={String(inputAmount)}
+                        onChangeText={(text) => changePriceByKeyPress(text)}
                     />
+                    <DefaultText style={styles.currencyLabel}>{currency}</DefaultText>
                 </View>
 
                 <View style={styles.percentages}>
                     <TouchableOpacity 
                         activeOpacity={0.6} 
-                        onPress={() => setCurrentPercentage(1)}
+                        onPress={() => {
+                            changePriceByPercentage(0.01);
+                            setCurrentPercentage(1);
+                        }}
                         style={currentPercentage >= 1 ? styles.selected : styles.percentage}
                     >
                         <DefaultText style={currentPercentage >= 1 ? styles.selectedNumberText : styles.numberText}>+1%</DefaultText>
                     </TouchableOpacity>
                     <TouchableOpacity 
                         activeOpacity={0.6} 
-                        onPress={() => setCurrentPercentage(5)}
+                        onPress={() => {
+                            changePriceByPercentage(0.05);
+                            setCurrentPercentage(5);
+                        }}
                         style={currentPercentage >= 5 ? styles.selected : styles.percentage}
                     >
                         <DefaultText style={currentPercentage >= 5 ? styles.selectedNumberText : styles.numberText}>+5%</DefaultText>
                     </TouchableOpacity>
                     <TouchableOpacity
                         activeOpacity={0.6} 
-                        onPress={() => setCurrentPercentage(10)}
+                        onPress={() =>{
+                            changePriceByPercentage(0.1);
+                            setCurrentPercentage(10);
+                        }}
                         style={currentPercentage >= 10 ? styles.selected : styles.percentage}
                     >
                         <DefaultText style={currentPercentage >= 10 ? styles.selectedNumberText : styles.numberText}>+10%</DefaultText>
                     </TouchableOpacity>
                     <TouchableOpacity 
                         activeOpacity={0.6} 
-                        onPress={() => setCurrentPercentage(20)}
+                        onPress={() => {
+                            changePriceByPercentage(0.2);
+                            setCurrentPercentage(20);
+                        }}
                         style={currentPercentage === 20 ? styles.selected : styles.percentage}
                     >
                         <DefaultText style={currentPercentage >= 20 ? styles.selectedNumberText : styles.numberText}>+20%</DefaultText>
@@ -102,8 +202,7 @@ const AuctionItemScreen = props => {
                 <DefaultButton 
                     style={styles.button} 
                     onPress={() => {
-                        setOpenModal(true);
-                        console.log('open modal: ', openModal);
+                        createAnOffer();
                     }}
                 >
                     Ofertar
@@ -114,13 +213,20 @@ const AuctionItemScreen = props => {
                     options={['Aceptar']}
                     actions={[() => {
                         setOpenModal(false);
-                        setOpeOfferSuccessModal(true);
+                    }]}
+                />                
+                <DefaultModal 
+                    title={errorMessage}
+                    modalVisible={errorModalOpen}
+                    options={['Aceptar']}
+                    actions={[() => {
+                        setErrorModalOpen(false);
                     }]}
                 />
                 <OfferSuccessModal 
-                    modalVisible={opeOfferSuccessModal}
+                    modalVisible={openOfferSuccessModal}
                     onPress={() => {
-                        setOpeOfferSuccessModal(false);
+                        setOpenOfferSuccessModal(false);
                         props.navigation.goBack();
                     }}
                 />
@@ -161,10 +267,13 @@ const styles = StyleSheet.create({
     },
     scroll: {
         height: '100%',
-        paddingVertical: 37,
+        paddingTop: 37,
         paddingHorizontal: 20,
 
     },  
+    scrollDescription:{
+        height: 100
+    },    
     especification: {
         justifyContent: 'space-between',
         marginBottom: 50,
@@ -173,7 +282,8 @@ const styles = StyleSheet.create({
     dataRow: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 6
     },
     headerRow: {
         flexDirection: 'row',
@@ -191,7 +301,6 @@ const styles = StyleSheet.create({
         fontFamily: 'poppins-300',
         fontSize: 14,
         lineHeight: 18,
-        marginBottom: 6
     },
     description: {
         fontFamily: 'poppins-300',
@@ -204,13 +313,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 10,
+        position: 'relative'
+    },
+    currencyLabel: {
+        position: 'absolute',
+        bottom: -15,
+        right: 0
     },
     input: {
         borderBottomWidth: 1,
         width: 230,
-        fontSize: 43,
+        fontSize: 28,
         paddingBottom: 5,
-        textAlign: 'center'
+        textAlign: 'left'
     },
     percentages: {
         alignSelf: 'center',
@@ -223,44 +338,47 @@ const styles = StyleSheet.create({
     },
     percentage: {
         width: 55,
-        height: 25,
-        borderTopWidth: 10,
-        borderColor: '#bbb',
-        alignItems: 'center'
+        height: 18,
+        backgroundColor: '#bbb',
+        alignItems: 'center',
+        borderRadius: 3
     },
     button: {
         width: 230,
         alignSelf: 'center',
-        borderRadius: 20
+        borderRadius: 20,
+        marginBottom: 50
     },
     numberText: {
-        color: '#666',
+        color: Colors.WHITE,
         fontSize: 12
     },
     selectedNumberText: {
         // color: '#75b9f7',
-        color: Colors.PRIMARY_BLUE,
+        color: Colors.WHITE,
         fontFamily: 'poppins-700',
         fontSize: 12
     },
     selected: {
         width: 55,
-        height: 25,
-        borderTopWidth: 10,
+        height: 18,
+        borderRadius: 3,
         alignItems: 'center',
         // borderColor: '#75b9f7',
-        borderColor: Colors.SECONDARY_BLUE
+        backgroundColor: '#73bcff'
     }
 })
 
 AuctionItemScreen.navigationOptions = (navData) => {
+
+    const product = navData.navigation.getParam('product');
 
     return {
         headerTitle: '',
         headerBackground: () => (
             <ImageBackground
                 style={styles.headerBackground}
-                source={{ uri: 'https://i.etsystatic.com/12182965/r/il/11e980/2001588984/il_570xN.2001588984_qtts.jpg' }}
+                source={{ uri: (product.imagenes && product.imagenes.lenght !== 0 ? product.imagenes[0] : 'https://i.etsystatic.com/12182965/r/il/11e980/2001588984/il_570xN.2001588984_qtts.jpg') }}
             >
                   {/* <View style={modalOpened ? styles.overlay : null}>
                 </View> */}

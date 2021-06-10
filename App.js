@@ -10,6 +10,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import auctionsReducer from './store/reducers/auctions';
+import authReducer from './store/reducers/auth';
 
 import Colors from './constants/Colors';
 
@@ -17,7 +18,8 @@ import Colors from './constants/Colors';
 enableScreens();
 
 const rootReducer = combineReducers({
-    auctions: auctionsReducer
+    auctions: auctionsReducer,
+    auth: authReducer,
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk))
 
@@ -36,8 +38,9 @@ const fetchFonts = () => {
 };
 
 export default function App() {
-
+ 
     const [fontLoaded, setFontLoaded] = useState(false);
+    console.log('\n\n********* Comienzo de la App: ' + new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString() + ' *********');
     
     if (!fontLoaded) {
         return (

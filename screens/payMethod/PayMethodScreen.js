@@ -1,18 +1,60 @@
-import React, { useState } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { useSelector, useDispatch } from 'react-redux';
+import * as authActions from '../../store/actions/auth';
 
 import HeaderButton from '../../components/HeaderButton';
 import DefaultButton from '../../components/DefaultButton';
 import DefaultText from '../../components/DefaultText';
 import Divider from '../../components/Divider';
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const PayMethodScreen = props => {
 
-    const methodsList = [''];
- 
+    const userId = useSelector(state => state.auth.loggedUser.identificador);
+    const userLoggedIn = useSelector(state => state.auth.loggedUser.identificador);
+    const idPreferredPayMethod = useSelector(state => state.auth.loggedUser.mediodepagopreferido);
+    const payMethodsList = useSelector(state => state.auth.allPayMethods);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if ( userLoggedIn ) {
+            dispatch(authActions.fetchAllPayMethods(userId))
+        }
+    }, [dispatch])
+
+    const getCardCompany = (method) => {
+        if ( method.tipo === 'credito' || method.tipo === 'debito' ) {
+            switch (method.numero[0]) {
+                case '4':
+                    return 'visa'
+                case '5':
+                    return 'mastercard'
+                case '3':
+                    return 'amex'
+                default:
+                    return 'card';
+            }
+        } else if ( method.tipo === 'cuenta' ) {
+            return 'bank'
+        } 
+    }
+
+    const getPayMethodType = (method) => {
+        switch (method.tipo) {
+            case 'cuenta':
+                return 'Cuenta'            
+            case 'credito':
+                return 'Crédito'            
+            case 'debito':
+                return 'Débito'
+            default:
+                return ''
+        }
+    }
+
     return (
         <View style={styles.screen}>
             <DefaultButton
@@ -23,40 +65,72 @@ const PayMethodScreen = props => {
                 Agregar medio de pago
             </DefaultButton>
             <Divider style={styles.divider} />
-            <View style={styles.methodsSection}>
+            <ScrollView style={styles.methodsSection}>
                 {
-                    methodsList.length === 0 ? (
+                    payMethodsList.length === 0 ? (
                         <DefaultText style={styles.noMethodText}>No tenés ningún medio de pago ingresado.</DefaultText>
                     ) : (
                         <>
-                            <TouchableOpacity style={styles.payMethod}>
-                                <View style={styles.payMethodInfo}>
-                                    <View style={styles.status}></View>
-                                    <Image style={styles.logo} source={require('../../assets/visa.png')} />
-                                    <DefaultText>Tarjeta 1989</DefaultText>
-                                </View>
-                                <Ionicons style={styles.arrow} name="ios-arrow-forward" size={24} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.payMethod}>
-                                <View style={styles.payMethodInfo}>
-                                    <View style={styles.status}></View>
-                                    <Image style={styles.logo} source={require('../../assets/mastercard.png')} />
-                                    <DefaultText>Tarjeta 1989</DefaultText>
-                                </View>
-                                <Ionicons style={styles.arrow} name="ios-arrow-forward" size={24} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.payMethod}>
-                                <View style={styles.payMethodInfo}>
-                                    <View style={styles.status}></View>
-                                    <Image style={styles.logo} source={require('../../assets/amex.png')} />
-                                    <DefaultText>Tarjeta 1989</DefaultText>
-                                </View>
-                                <Ionicons style={styles.arrow} name="ios-arrow-forward" size={24} />
-                            </TouchableOpacity>
+                            {
+                                payMethodsList.map( payMethod => {
+                                    return (
+                                        <TouchableOpacity 
+                                            style={styles.payMethod} 
+                                            key={payMethod.identificador}
+                                            onPress={ () => {
+                                                const screen = payMethod.tipo === 'cuenta' ? 'BankAccountScreen' : 'CreditCardScreen';
+                                                props.navigation.navigate(screen, {
+                                                    payMethod: payMethod,
+                                                    isEditing: true,
+                                                    tipo: payMethod.tipo,
+                                                    currency: payMethod.moneda
+                                                })
+                                            }}
+                                        >
+                                            <View style={styles.payMethodInfo}>
+                                                <View style={ payMethod.estado ? styles.status : styles.pendingStatus}></View>
+                                                {
+                                                    getCardCompany(payMethod) === 'visa' ? (
+                                                        <Image style={styles.logo} source={require('../../assets/visa.png')} />
+                                                    ) : null
+                                                }
+                                                {
+                                                    getCardCompany(payMethod) === 'mastercard' ? (
+                                                        <Image style={styles.logo} source={require('../../assets/mastercard.png')} />
+                                                    ) : null
+                                                }                                                
+                                                {
+                                                    getCardCompany(payMethod) === 'amex' ? (
+                                                        <Image style={styles.logo} source={require('../../assets/amex.png')} />
+                                                    ) : null
+                                                }                                                
+                                                {
+                                                    getCardCompany(payMethod) === 'card' ? (
+                                                        <Image style={styles.logo} source={require('../../assets/card.png')} />
+                                                    ) : null
+                                                }
+                                                {
+                                                    getCardCompany(payMethod) === 'bank' ? (
+                                                        <Image style={styles.logo} source={require('../../assets/bank.png')} />
+                                                    ) : null
+                                                }
+                                                <DefaultText>{getPayMethodType(payMethod) + ' '} ...{payMethod.numero.slice(-4)}</DefaultText>
+                                                <DefaultText>{ ' - ' + payMethod.moneda }</DefaultText>
+                                            </View>
+                                            {
+                                                idPreferredPayMethod === payMethod.identificador ? (
+                                                    <AntDesign style={styles.preferred} name="checkcircle" size={24} color="#07D39B" />
+                                                ) : null
+                                            }
+                                            <Ionicons style={styles.arrow} name="ios-arrow-forward" size={24} />
+                                        </TouchableOpacity>
+                                    )
+                                })
+                            }
                         </>
                     )
                 }
-            </View>
+            </ScrollView>
             <DefaultButton>Volver a la subasta</DefaultButton>
         </View>
     )
@@ -77,8 +151,6 @@ const styles = StyleSheet.create({
     },
     methodsSection: {
         flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
         width: '100%'
     },
     noMethodText: {
@@ -114,11 +186,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#90C7A6',
         borderRadius: 10
     },
+    pendingStatus: {
+        width: 10,
+        height: 10,
+        backgroundColor: '#E0E5A6',
+        borderRadius: 10
+    },
     logo: {
         width: 40,
         height: 20,
         marginHorizontal: 10
     },
+    preferred: {
+        position: 'absolute',
+        right: 50
+    }
 })
 
 
@@ -138,3 +220,12 @@ PayMethodScreen.navigationOptions = (navData) => {
 }
 
 export default PayMethodScreen;
+
+
+// "identificador": 1,
+// "tipo": "credito",
+// "estado": true,
+// "moneda": "ARS",
+// "numero": 123,
+// "vencimiento": "Mon Jan 12 00:00:00 2026",
+// "cvv": 123

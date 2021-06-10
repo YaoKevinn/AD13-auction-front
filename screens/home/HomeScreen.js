@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { Text, View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
@@ -10,20 +10,51 @@ import DefaultModal from '../../components/DefaultModal';
 import DefaultText from '../../components/DefaultText';
 import Divider from '../../components/Divider';
 import AuctionListItem from '../../components/AuctionListItem';
+import { set } from 'react-native-reanimated';
 
 const HomeScreen = props => {
 
-    const allAuctions = useSelector(state => state.auctions.allAuctions);
+    const getTimeByDateString = (dateString) => {
+        return new Date(dateString).getTime()
+    }
+
+    const allAuctions = useSelector(state => state.auctions.allAuctions).sort((a, b) => getTimeByDateString(a.inicio) - getTimeByDateString(b.inicio));
+    const loggedUser = useSelector(state => state.auth.loggedUser);
+    const userLoggedIn = useSelector(state => state.auth.userLoggedIn);
     const dispatch = useDispatch();
+
+    const [ modalOpen, setModalOpen ] = useState(false);
+    const [ modalMessage, setModalMessage ] = useState('');
+    const [ refreshing, setRefreshing ] = React.useState(false);
 
     useEffect(() => {
         dispatch(auctionsActions.fetchAllAuctions());
     }, [dispatch])
 
-    console.log('HomeScreen: ', allAuctions);
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        dispatch(auctionsActions.fetchAllAuctions());
+        wait(2000).then(() => setRefreshing(false));
+      }, []);
+
+    const wait = (timeout) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+
+    console.log( userLoggedIn ? (loggedUser, userLoggedIn) : 'Sin usuario loggeado');
+
  
     return (
-        <ScrollView style={styles.screen}>
+        <ScrollView 
+            style={styles.screen}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    title='actualizando...'
+                />
+            }
+        >
             { 
                 allAuctions.map( auction => {
                     return (
@@ -31,9 +62,18 @@ const HomeScreen = props => {
                             <AuctionListItem 
                                 key={auction.identificador}
                                 auction={auction}
-                                onPress={() => props.navigation.navigate('AuctionScreen', {
-                                    auctionId: auction.identificador
-                                })} />
+                                onPress={() => {
+                                    if ( auction.estado === 'abierta' ) {
+                                        props.navigation.navigate('AuctionScreen', {
+                                            auctionId: auction.identificador,
+                                            auctionData: auction
+                                        }); 
+                                    } else {
+                                        setModalMessage('La subasta aún no empezó, podrás ingresar una vez cuando esté abierta');
+                                        setModalOpen(true);
+                                    }
+                                }}
+                             />
                             <Divider style={styles.divider} />
                         </View>
                     )
@@ -42,6 +82,12 @@ const HomeScreen = props => {
             {/* <AuctionListItem onPress={() => props.navigation.navigate('AuctionScreen')} /> */}
             {/* <Divider style={styles.divider} /> */}
             <DefaultText style={styles.footerText}>No hay más subastas por este momento</DefaultText>
+            <DefaultModal 
+                title={modalMessage}
+                modalVisible={modalOpen}
+                options={['Confirmar']}
+                actions={[() => setModalOpen(false)]}
+            />
         </ScrollView>
     )
 }

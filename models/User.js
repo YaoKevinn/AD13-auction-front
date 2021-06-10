@@ -16,6 +16,6 @@ export class User {
         this.fechanacimiento = user.fechanacimiento; 
         this.estado = user.estado; 
         this.foto = user.foto; 
-        this.Token = user.Token;
+        // this.Token = user.Token;
     }
 }

@@ -20,6 +20,7 @@ import OfferSuccessScreen from '../screens/home/OfferSuccessScreen';
 import NewPaymentScreen from '../screens/payMethod/NewPaymentScreen';
 import CreditCardScreen from '../screens/payMethod/CreditCardScreen';
 import BankAccountScreen from '../screens/payMethod/BankAccountScreen';
+import GenerateNewPasswordScreen from '../screens/login/GenerateNewPasswordScreen';
 
 import Colors from "../constants/Colors";
 import DrawerContent from "../components/DrawerContent";
@@ -42,7 +43,14 @@ const HomeStackNavigator = createStackNavigator(
         AuctionItemScreen: { screen: AuctionItemScreen },
         AuctionScreen: { screen: AuctionScreen },
         HomeScreen: { screen: HomeScreen },
-        OfferSuccessScreen: { screen: OfferSuccessScreen }
+        OfferSuccessScreen: { screen: OfferSuccessScreen },
+        PayMethodScreen: { screen: PayMethodScreen },
+        LoginScreen: { screen: LoginScreen },
+        SignupScreen: { screen: SignupScreen },
+        RecoverMailScreen: { screen: RecoverMailScreen },
+        SignupValidationPendingScreen: { screen: SignupValidationPendingScreen },
+        RecoverPasswordEmailSentScreen: { screen: RecoverPasswordEmailSentScreen },
+        GenerateNewPasswordScreen: { screen: GenerateNewPasswordScreen },
     },
     {
         defaultNavigationOptions: defaultStackNavOptions,
@@ -66,6 +74,7 @@ const PayMethodStackNavigator = createStackNavigator(
         NewPaymentScreen: { screen: NewPaymentScreen },
         CreditCardScreen: { screen: CreditCardScreen },
         BankAccountScreen: { screen: BankAccountScreen },
+        HomeStackNavigator: { screen: HomeStackNavigator },
     },
     {
         defaultNavigationOptions: defaultStackNavOptions,
@@ -89,7 +98,13 @@ const LoginStackNavigator = createStackNavigator(
         SignupScreen: { screen: SignupScreen },
         RecoverMailScreen: { screen: RecoverMailScreen },
         SignupValidationPendingScreen: { screen: SignupValidationPendingScreen },
-        RecoverPasswordEmailSentScreen: { screen: RecoverPasswordEmailSentScreen }
+        RecoverPasswordEmailSentScreen: { screen: RecoverPasswordEmailSentScreen },
+        GenerateNewPasswordScreen: { screen: GenerateNewPasswordScreen },
+        AuctionItemScreen: { screen: AuctionItemScreen },
+        AuctionScreen: { screen: AuctionScreen },
+        HomeScreen: { screen: HomeScreen },
+        OfferSuccessScreen: { screen: OfferSuccessScreen },
+        PayMethodScreen: { screen: PayMethodScreen },
     },
     {
         defaultNavigationOptions: defaultStackNavOptions,
