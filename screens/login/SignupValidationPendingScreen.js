@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DefaultButton from '../../components/DefaultButton';
 import DefaultText from '../../components/DefaultText';
 
-const SignupValidationPendingScreen = () => {
+const SignupValidationPendingScreen = (props) => {
 
         return (
             <View style={styles.screen}>

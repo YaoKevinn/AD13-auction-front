@@ -67,7 +67,7 @@ const AuctionScreen = props => {
                 </View>
                 <View style={styles.row}>
                     <DefaultText style={styles.detailTitle}>Rematador: </DefaultText>
-                    <DefaultText style={styles.detailTime}>{auction.subastador}</DefaultText>
+                    <DefaultText style={styles.detailTime}>{auction.nombresubastador}</DefaultText>
                 </View>
             </View>
             <View style={styles.catalogHeader}>
@@ -84,12 +84,16 @@ const AuctionScreen = props => {
                             )
                         })
                     ) : (
-                        <DefaultText>Cargando contenido...</DefaultText>
+                        <DefaultText style={{textAlign: 'center'}}>Cargando contenido...</DefaultText>
                     )
                 }
             </View>
             <View style={styles.footer}>
-                <DefaultText style={styles.footerText}>No hay más producto para esta subasta</DefaultText>
+                {
+                    allProductsInAuction.length !== 0 ? (
+                        <DefaultText style={styles.footerText}>No hay más producto para esta subasta</DefaultText>
+                    ) : null
+                }
             </View>
         </ScrollView>
     )

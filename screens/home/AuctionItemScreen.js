@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, TextInput, Image, ImageBackground, TouchableOpacity, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, TextInput, Image, ImageBackground, TouchableOpacity, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, RefreshControl} from 'react-native';
 
 import { useSelector, useDispatch } from 'react-redux';
 import * as auctionsActions from '../../store/actions/auctions';
@@ -27,8 +27,8 @@ const AuctionItemScreen = props => {
     const [ openOfferSuccessModal, setOpenOfferSuccessModal ] = useState(false);
     const [ errorModalOpen, setErrorModalOpen ] = useState(false);
     const [ errorMessage, setErrorMessage ] = useState(false);
-
-    const [ timeCounter, setTimeCounter ] = useState(5);
+    const [ refreshing, setRefreshing ] = useState(false);
+    const [ tempWinner, setTempWinner ] = useState('-');
 
     // const intervalRef = setInterval(  () => {
     //     if ( timeCounter === 0 ) {
@@ -37,6 +37,27 @@ const AuctionItemScreen = props => {
     //     setTimeCounter(timeCounter - 1);
     //     console.log(timeCounter);
     // }, 1000)
+
+    useEffect(() => {
+        fetch(Urls.BASE_API_URL+`/chequearPuja/${product.identificador}`, {
+            method: 'GET',
+            header: { 'Content-Type': 'application/json' }
+        })
+        .then( res => res.json() )
+        .then( data => {
+            console.log('Exito API /checkearPuja chequar producto');
+            console.log(data);
+            if ( data.statusCode && data.statusCode === 200 ) {
+                if ( data.ganador && data.ganador === 'si' && data.cliente === loggedUser.identificador ) {
+                    setOpenOfferSuccessModal(true);
+                } else if ( data.ganador && data.ganador === 'no') {
+                    dispatch({type: auctionsActions.UPDATE_PRODUCT_OFFERPRICE, idProducto: product.identificador, importeActual: parseFloat(data.importe)});
+                    setTempWinner(data.nombrecliente);
+                }
+            }
+        })
+        .catch( err => console.log('Fallo API /checkearPuja chequar producto =>', err))
+    })
 
     const changePriceByPercentage = (percentage) => {
         setInputAmount( (product.pujaactual + (product.preciobase * percentage)).toFixed(2) );
@@ -110,15 +131,48 @@ const AuctionItemScreen = props => {
 
     }
 
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        fetch(Urls.BASE_API_URL+`/chequearPuja/${product.identificador}`, {
+            method: 'GET',
+            header: { 'Content-Type': 'application/json' }
+        })
+        .then( res => res.json() )
+        .then( data => {
+            console.log('Exito API /checkearPuja chequar producto');
+            console.log(data);
+            if ( data.ganador && data.ganador === 'si' && data.cliente === loggedUser.identificador ) {
+                setOpenOfferSuccessModal(true);
+            } else if ( data.ganador && data.ganador === 'no') {
+                dispatch({type: auctionsActions.UPDATE_PRODUCT_OFFERPRICE, idProducto: product.identificador, importeActual: parseFloat(data.importe)});
+                setTempWinner(data.nombrecliente);
+            }
+        })
+        .catch( err => console.log('Fallo API /checkearPuja chequar producto =>', err))
+
+        wait(2000).then(() => setRefreshing(false));
+      }, []);
+
+    const wait = (timeout) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+
+
     return (
         <KeyboardAvoidingView 
             style={styles.screen}
             behavior="position"
         >
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss() } style={styles.detailSection}>
-                <ScrollView style={styles.scroll}>
-
-                
+                <ScrollView 
+                style={styles.scroll}
+                refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    title='actualizando...'
+                />
+            }>
                 <View style={styles.headerRow}>
                     <DefaultText style={styles.title}>Descripción</DefaultText>
                     <DefaultText style={styles.title}>Nº Pieza: {product.identificador}</DefaultText>
@@ -140,8 +194,8 @@ const AuctionItemScreen = props => {
                         <DefaultText style={styles.data}>{currency} { product.pujaactual || 0 }</DefaultText>
                     </View>
                     <View style={styles.dataRow}>
-                        <DefaultText style={styles.title}>Oferta mínima: </DefaultText>
-                        <DefaultText style={styles.data}>{currency} { (product.pujaminima || 0) + product.pujaactual }</DefaultText>
+                        <DefaultText style={styles.title}>Mayor oferta: </DefaultText>
+                        <DefaultText style={styles.data}>{tempWinner}</DefaultText>
                     </View>
                 </View>
 
@@ -240,7 +294,7 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         backgroundColor: Colors.WHITE,
-        paddingTop: 170,
+        paddingTop: 200,
         overflow: 'visible'
     },
     // HEADER
@@ -254,7 +308,7 @@ const styles = StyleSheet.create({
     },
     headerBackground: {
         width: '100%',
-        height: 260,
+        height: 300,
         backgroundColor: 'rgba(0,0,0,0.6)',
         zIndex: 0
     },

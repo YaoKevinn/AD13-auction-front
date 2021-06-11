@@ -18,7 +18,7 @@ const HomeScreen = props => {
         return new Date(dateString).getTime()
     }
 
-    const allAuctions = useSelector(state => state.auctions.allAuctions).sort((a, b) => getTimeByDateString(a.inicio) - getTimeByDateString(b.inicio));
+    const allAuctions = useSelector(state => state.auctions.allAuctions).sort((a, b) => getTimeByDateString(a.inicio) - getTimeByDateString(b.inicio)).reverse();
     const loggedUser = useSelector(state => state.auth.loggedUser);
     const userLoggedIn = useSelector(state => state.auth.userLoggedIn);
     const dispatch = useDispatch();

@@ -302,6 +302,15 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft: 5
     },
+    assignBtn: {
+        marginVertical: 5,
+        backgroundColor: '#CCC',
+        flex: 1
+    },
+    removeBtn: {
+        flex: 1,
+        backgroundColor: Colors.SECONDARY_RED
+    },
 
 })
 

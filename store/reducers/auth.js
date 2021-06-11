@@ -6,7 +6,8 @@ import {
     EDIT_CARD_PAYMETHOD,
     EDIT_ACCOUNT_PAYMETHOD,
     DELETE_PAYMETHOD,
-    ASSIGN_PAYMETHOD
+    ASSIGN_PAYMETHOD,
+    SIGN_OUT
 } from '../actions/auth';
 import User from '../../models/User';
 
@@ -14,7 +15,7 @@ const initialState = {
     loggedUser: {
         // admitido: 'si',
         // apellido: 'Yao',
-        // categoria: 'oro',
+        // categoria: 'platino',
         // contraseña: 'ofvLC34Frs',
         // direccion: null,
         // documento: '94744232',
@@ -108,6 +109,8 @@ const authReducer = ( state = initialState, action ) => {
                 }
             })
             return { ...state, allPayMethods: newPayMethodsList4 }
+        case SIGN_OUT:
+            return { ...state, loggedUser: {}, userLoggedIn: false, allPayMethods: [] }
         default:
             return state;
     }

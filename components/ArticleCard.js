@@ -15,10 +15,13 @@ const ArticleCard = (props) => {
 
     const [ pendingModalOpen, setPendingModalOpen ] = useState(false);
 
+    
+
     return (
         <View style={ styles.cardContainer }>
             <Image 
                 style={styles.productImage}
+                resizeMode="cover"
                 source={{uri: (product.imagenes && product.imagenes.lenght !== 0 ? product.imagenes[0] : 'https://st3.depositphotos.com/23594922/31822/v/600/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg')}}
             />
             <View style={styles.productDetail}>

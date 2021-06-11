@@ -332,7 +332,7 @@ const CreditCardScreen = props => {
                     <View style={styles.rowLeftItem}>
                         <DefaultText>Vencimiento</DefaultText>
                         <DefaultTextInput 
-                            placeholder="Ej: 10/03" 
+                            placeholder="Ej: MM/AA" 
                             value={expiredDateInput}
                             onChangeText={(text) => handleExpiredDateChange(text)}
                             keyboardType="number-pad"
@@ -490,7 +490,8 @@ const styles = StyleSheet.create({
         flex: 1
     },
     removeBtn: {
-        flex: 1
+        flex: 1,
+        backgroundColor: Colors.SECONDARY_RED
     },
     btnRow: {
         flexDirection: 'row'

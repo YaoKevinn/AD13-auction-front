@@ -131,7 +131,9 @@ const PayMethodScreen = props => {
                     )
                 }
             </ScrollView>
-            <DefaultButton>Volver a la subasta</DefaultButton>
+            <DefaultButton onPress={() => {
+                props.navigation.navigate('HomeScreen');
+            }}>Volver a la subasta</DefaultButton>
         </View>
     )
 }
