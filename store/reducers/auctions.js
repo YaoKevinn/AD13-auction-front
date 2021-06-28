@@ -1,13 +1,17 @@
 import { 
     SET_ALL_AUCTIONS, 
     SET_PRODUCTS_BY_AUCTIONID,
-    UPDATE_PRODUCT_OFFERPRICE
+    UPDATE_PRODUCT_OFFERPRICE,
+    SET_USER_AUCTIONS,
+    SET_HISTORY_IN_CURRENT_AUCTION
 } from '../actions/auctions';
 
 const initialState = {
     allAuctions: [],
+    currentAuctionId: 0,
     productsInCurrentAuction: [],
-    currentAuctionId: 0
+    userAuctions: {},
+    historyInCurrentAuction: {},
 }
 
 const auctionsReducer = ( state = initialState, action ) => {
@@ -16,6 +20,10 @@ const auctionsReducer = ( state = initialState, action ) => {
             return { ...state, allAuctions: action.auctions }  
         case SET_PRODUCTS_BY_AUCTIONID:
             return { ...state, productsInCurrentAuction: action.products, currentAuctionId: action.auctionId }
+        case SET_USER_AUCTIONS:
+            return { ...state, userAuctions: action.userAuctions }
+        case SET_HISTORY_IN_CURRENT_AUCTION:
+            return { ...state, historyInCurrentAuction: action.historyInCurrentAuction }
         case UPDATE_PRODUCT_OFFERPRICE:
             const newProductsList = [...state.productsInCurrentAuction];
             newProductsList.forEach( product => {
