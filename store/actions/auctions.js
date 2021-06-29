@@ -47,6 +47,7 @@ export const fetchAllProductsByAuctionId = (subastaId) => {
         ).then( res => res.json())
         .then( data => {
             console.log('ÉXITO: API /productosSubastas/{id} Listas de productos por idSubasta')
+            console.log('ProductosSubastas: \n', data);
             resData = data;
             // console.log(data[0].productos);
         })
@@ -71,10 +72,10 @@ export const fetchUserAuctions = (userId) => {
             }
         ).then( res => res.json())
         .then( data => {
-            console.log('ÉXITO: API /subastas Listas de subastas', data.length)
+            console.log('ÉXITO: API /historial ', data.length)
             resData = data;
         })
-        .catch( err => console.log( 'FALLO: API /subastas Listas de subastas =>', err) );
+        .catch( err => console.log( 'FALLO: API /historial  =>', err) );
 
         dispatch({
             type: SET_USER_AUCTIONS, userAuctions: resData
@@ -84,27 +85,25 @@ export const fetchUserAuctions = (userId) => {
 
 export const setHistoryInCurrentAuction = (userId, auctionId) => {
     return async dispatch => {
-        console.log("ENTRE")
-        let resData = {};
+        let resData = [];
         const response = await fetch(
-            BASE_API_URL+`/historialSubasta/`, 
+            BASE_API_URL+`/historialSubasta`, 
             {
                 method: 'POST',
                 body: JSON.stringify({
                     'UserID': userId,
-                    'SubataID': auctionId
+                    'SubastaID': auctionId
                 }),
-                heaeder: {
+                header: {
                     'Content-Type': 'application/json'
                 }
             }
-        ).then( res => res.text())
+        ).then( res => res.json())
         .then( data => {
-            console.log("ENTRE", data)
-            console.log('ÉXITO: API /subastas Listas de subastas', data)
+            console.log('ÉXITO: API /historialSubasta \n', data)
             resData = data;
         })
-        .catch( err => console.log( 'FALLO: API /subastas Listas de subastas =>', err) );
+        .catch( err => console.log( 'FALLO: API /historialSubasta =>', err) );
 
         dispatch({
             type: SET_HISTORY_IN_CURRENT_AUCTION, historyInCurrentAuction: resData

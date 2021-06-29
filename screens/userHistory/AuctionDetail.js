@@ -11,7 +11,15 @@ import * as auctionsActions from '../../store/actions/auctions';
 import { clockRunning } from 'react-native-reanimated';
 
 const ListHistory = props => {
-    const { historyInCurrentAuction } = useSelector(state => state.auctions)
+
+    const historyInCurrentAuction = useSelector(state => state.auctions.historyInCurrentAuction);
+
+    // const dispatch = useDispatch();
+
+    // useEffect(() => {
+    //     dispatch(auctionsActions.setHistoryInCurrentAuction());
+    // }, [])
+
 
     const subastas = [
         {
@@ -29,41 +37,59 @@ const ListHistory = props => {
         }
     ]
 
+    const getWinOffers = () => {
+        return historyInCurrentAuction.filter( his => his.ganador === 'si' );
+    } 
+
+    const getFailedOffers = () => {
+        return historyInCurrentAuction.filter( his => his.ganador === 'no' );
+    }
+
 
     return (
         <>
-            <View style={styles.bigDataContainer}>
+            <ScrollView style={styles.bigDataContainer}>
                 <View>
-                    <DefaultText style={styles.dataTitle}>Historial de subastas: Nombre 1</DefaultText>
+                    <DefaultText style={styles.dataTitle}>Historial de ofertas: </DefaultText>
+                    <DefaultText>{ props.currentAuctionName }</DefaultText>
                 </View>
                 <View>
                     <View>
                         <DefaultText style={styles.dataSubtitle}>Ofertas ganadas</DefaultText>
                         <View>
                             {
-                                subastas?.map(el => {
-                                    return <View>
-                                        <View style={styles.dataContainer}>
-                                            <DefaultText style={styles.dataItem}>{el.nombre}</DefaultText>
-                                            <DefaultText style={styles.dataItem}>{el.importe}</DefaultText>
+                                getWinOffers().length !== 0 ? 
+                                    getWinOffers().map( (el, index) => {
+                                        return <View key={index}>
+                                            <View style={styles.dataContainer}>
+                                                <DefaultText style={styles.dataItem}>{el.descripcioncatalogo}</DefaultText>
+                                                <DefaultText style={styles.dataItem}>{props.currentAuctionCurrency} {el.importe}
+                                                    <Text style={styles.icon}>👑</Text>
+                                                </DefaultText>
+                                            </View>
+                                            <Divider style={styles.divider}></Divider>
                                         </View>
-                                        <Divider style={styles.divider}></Divider>
-                                    </View>
-                                })
+                                    })
+                                :
+                                    <DefaultText>Aún no hay ofertas ganadas</DefaultText>
+                                    
                             }
                         </View>
                         <DefaultText style={styles.dataSubtitle}>Ofertas perdidas</DefaultText>
                         <View>
                             {
-                                subastas?.map(el => {
-                                    return <View>
-                                        <View style={styles.dataContainer}>
-                                            <DefaultText style={styles.dataItem}>{el.nombre}</DefaultText>
-                                            <DefaultText style={styles.dataItem}>{el.importe}</DefaultText>
+                                getFailedOffers().length !== 0 ? 
+                                    getFailedOffers().map( (el, index) => {
+                                        return <View  key={index}>
+                                            <View style={styles.dataContainer}>
+                                                <DefaultText style={styles.dataItem}>{el.descripcioncatalogo}</DefaultText>
+                                                <DefaultText style={styles.dataItem}>{props.currentAuctionCurrency} {el.importe}</DefaultText>
+                                            </View>
+                                            <Divider style={styles.divider}></Divider>
                                         </View>
-                                        <Divider style={styles.divider}></Divider>
-                                    </View>
-                                })
+                                    })
+                                :
+                                    <DefaultText>Aún no hay ofertas perdidas</DefaultText>
                             }
                         </View>
                     </View>
@@ -77,7 +103,7 @@ const ListHistory = props => {
                     </DefaultButton>
                 </View>
 
-            </View>
+            </ScrollView>
         </>
     )
 }
@@ -85,23 +111,24 @@ const ListHistory = props => {
 
 const styles = StyleSheet.create({
     bigDataContainer: {
-        alignItems: 'center',
+        // alignItems: 'center',
+        flex: 1
     },
     backButton: {
         marginTop: 60,
-        width: 330,
+        width: '100%',
         alignItems: 'center',
         justifyContent: 'center'
     },
     dataTitle: {
         fontSize: 21,
-        fontWeight: 'bold',
+        fontFamily: 'poppins-500',
         textAlign: 'left',
         marginTop: 25
     },
     dataSubtitle: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'poppins-500',
         marginTop: 40,
         marginBottom: 10
 
@@ -109,7 +136,7 @@ const styles = StyleSheet.create({
     dataContainer: {
         alignItems: 'center',
         height: 50,
-        width: 330,
+        width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between'
 
@@ -117,11 +144,15 @@ const styles = StyleSheet.create({
     dataItem: {
         fontSize: 15
     },
+    icon: {
+        position: 'relative',
+        bottom: 4
+    },  
     dataNumber: {
         fontSize: 20,
     },
     divider: {
-        width: 300,
+        width: '100%',
     }
 })
 

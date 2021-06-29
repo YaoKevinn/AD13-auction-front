@@ -34,9 +34,9 @@ const ListHistory = props => {
                 <DefaultText style={styles.dataTitle}>Historial subastas</DefaultText>
                 <View style={styles.auctionItemsContainer}>
                     {
-                        userAuctions?.subatas?.map(el => {
+                        userAuctions?.subastas?.map(el => {
                             return <TouchableOpacity
-                                onPress={() => props.handleItemDetail(loggedUser.identificador, el.identificador)}
+                                onPress={() => props.handleItemDetail(loggedUser.identificador, el.identificador, el.nombre, el.moneda)}
                                 activeOpacity={0.5}
                                 key={el.identificador}
                             >

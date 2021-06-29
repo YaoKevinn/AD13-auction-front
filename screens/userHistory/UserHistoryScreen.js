@@ -18,25 +18,31 @@ const UserHistoryScreen = props => {
     const userLoggedIn = useSelector(state => state.auth.userLoggedIn);
     const [showDetail, setShowDetail] = useState(false)
 
+    const [ currentAuctionName, setCurrentAuctionName ] = useState('');
+    const [ currentAuctionCurrency, setCurrentAuctionCurrency ] = useState('');
+
     useEffect(() => {
         dispatch(auctionsActions.fetchUserAuctions(loggedUser.identificador));
-    }, [dispatch, loggedUser])
+    }, [dispatch])
 
-    useEffect(()=>{
-        console.log(userAuctions)
-    },[userAuctions])
+    // useEffect(()=>{
+    //     console.log(userAuctions)
+    // },[userAuctions])
 
-    const handleItemDetail = (userId, auctionId) => {
+    const handleItemDetail = (userId, auctionId, auctionName, coin) => {
         dispatch(auctionsActions.setHistoryInCurrentAuction(userId, auctionId))
+        setCurrentAuctionName(auctionName);
+        setCurrentAuctionCurrency(coin);
         setShowDetail(true)
     }
 
     return (
         <View style={styles.historyContainer}>
-            {showDetail ? 
-            <AuctionDetail setShowDetail={setShowDetail} />
-            :
-            <ListHistory handleItemDetail={handleItemDetail} />
+            {
+                showDetail ? 
+                <AuctionDetail setShowDetail={setShowDetail} currentAuctionName={currentAuctionName} currentAuctionCurrency={currentAuctionCurrency}/>
+                :
+                <ListHistory handleItemDetail={handleItemDetail} />
             }
         </View>
     )

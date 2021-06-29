@@ -28,7 +28,6 @@ const HomeScreen = props => {
     const [ refreshing, setRefreshing ] = React.useState(false);
 
     useEffect(() => {
-
         dispatch(auctionsActions.fetchAllAuctions());
     }, [dispatch])
 

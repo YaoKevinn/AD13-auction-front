@@ -12,7 +12,7 @@ const initialState = {
     currentAuctionId: 0,
     productsInCurrentAuction: [],
     userAuctions: {},
-    historyInCurrentAuction: {},
+    historyInCurrentAuction: [],
 }
 
 const auctionsReducer = ( state = initialState, action ) => {
