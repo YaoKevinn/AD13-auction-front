@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
-import { useSelector, useDispatch } from 'react-redux';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { useSelector } from 'react-redux';
 import Divider from '../../components/Divider';
-import Colors from '../../constants/Colors';
 import DefaultText from '../../components/DefaultText';
-import HeaderButton from '../../components/HeaderButton';
-import * as auctionsActions from '../../store/actions/auctions';
-import { clockRunning } from 'react-native-reanimated';
 
 const ListHistory = props => {
     const userAuctions = useSelector(state => state.auctions.userAuctions)
