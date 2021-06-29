@@ -1,7 +1,8 @@
 import { 
     SET_ALL_AUCTIONS, 
     SET_PRODUCTS_BY_AUCTIONID,
-    UPDATE_PRODUCT_OFFERPRICE
+    UPDATE_PRODUCT_OFFERPRICE,
+    CLEAR_CURRENT_PRODUCT
 } from '../actions/auctions';
 
 const initialState = {
@@ -24,6 +25,8 @@ const auctionsReducer = ( state = initialState, action ) => {
                 }
             })
             return { ...state, productsInCurrentAuction: newProductsList }
+        case CLEAR_CURRENT_PRODUCT:
+            return { ...state, currentAuctionId: 0, productsInCurrentAuction: [] }
         default:
             return state;
     }

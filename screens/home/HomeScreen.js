@@ -28,6 +28,7 @@ const HomeScreen = props => {
     const [ refreshing, setRefreshing ] = React.useState(false);
 
     useEffect(() => {
+
         dispatch(auctionsActions.fetchAllAuctions());
     }, [dispatch])
 
@@ -63,6 +64,7 @@ const HomeScreen = props => {
                                 key={auction.identificador}
                                 auction={auction}
                                 onPress={() => {
+                                    dispatch({type: auctionsActions.CLEAR_CURRENT_PRODUCT});
                                     if ( auction.estado === 'abierta' ) {
                                         props.navigation.navigate('AuctionScreen', {
                                             auctionId: auction.identificador,

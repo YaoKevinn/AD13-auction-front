@@ -1,6 +1,7 @@
 export const SET_ALL_AUCTIONS = 'SET_ALL_AUCTIONS';
 export const SET_PRODUCTS_BY_AUCTIONID = 'SET_PRODUCTS_BY_AUCTIONID';
 export const UPDATE_PRODUCT_OFFERPRICE = 'UPDATE_PRODUCT_OFFERPRICE';
+export const CLEAR_CURRENT_PRODUCT = 'CLEAR_CURRENT_PRODUCT';
 
 export const BASE_API_URL = 'https://app-tpo.herokuapp.com';
 

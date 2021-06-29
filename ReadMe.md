@@ -14,6 +14,7 @@
 * npm i react-native-flip-card
 * npm install --save redux react-redux 
 * npm install --save redux-thunk
+* npm install --save react-native-snap-carousel
 
 * npm install
 

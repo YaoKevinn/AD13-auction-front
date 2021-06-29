@@ -7,10 +7,11 @@ import DefaultText from '../../components/DefaultText';
 import Colors from '../../constants/Colors';
 import ArticleCard from '../../components/ArticleCard';
 import { FontAwesome } from '@expo/vector-icons'; 
+import { ActionSheetIOS } from 'react-native';
 
 const AuctionScreen = props => {
 
-    const allProductsInAuction = useSelector(state => state.auctions.productsInCurrentAuction);
+    let allProductsInAuction = useSelector(state => state.auctions.productsInCurrentAuction);
     const currentAuctionId = useSelector( state => state.auctions.currentAuctionId );
     const userLoggedIn = useSelector( state => state.auth.userLoggedIn );
     const loggedUser = useSelector( state => state.auth.loggedUser );
@@ -25,6 +26,7 @@ const AuctionScreen = props => {
         if ( userLoggedIn && !loggedUser.mediodepagopreferido ) {
             // props.navigation.navigate('PayMethodScreen');
         }
+        allProductsInAuction = [];
         dispatch(auctionsActions.fetchAllProductsByAuctionId(auctionId));
         console.log(allProductsInAuction, currentAuctionId);
     }, [dispatch])
@@ -80,7 +82,7 @@ const AuctionScreen = props => {
                     allProductsInAuction.length !== 0 ? (
                         allProductsInAuction.map( product => {
                             return (
-                                <ArticleCard navigation={props.navigation} product={product} key={product.identificador} currency={auction.moneda} auctionId={auctionId} />
+                                <ArticleCard navigation={props.navigation} product={product} key={product.identificador} currency={auction.moneda} auctionId={auctionId} auctionCategory={auction.categoria} />
                             )
                         })
                     ) : (
@@ -207,7 +209,8 @@ AuctionScreen.navigationOptions = (navData) => {
         ),
         headerRight: () => (
             <DefaultText style={styles.currency}>Moneda: {auction.moneda}</DefaultText>
-        )
+        ),
+        onGoBack: () => { console.log('going back') }
     }
 }
 
