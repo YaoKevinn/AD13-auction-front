@@ -24,7 +24,7 @@ const CreditCardScreen = props => {
 
     const getExpiredDate = (date) => {
         const dateObj = new Date(date);
-        const monthString = dateObj.getMonth().toString();
+        const monthString = (dateObj.getMonth()+1).toString();
         const yearString = dateObj.getFullYear().toString();
         if ( monthString.length === 1 ) {
             return '0' + monthString + '/' + yearString.slice(-2);

@@ -15,6 +15,7 @@ const DefaultTextInput = (props) => {
                 onChangeText={props.onChangeText ? props.onChangeText : null}
                 onKeyPress={props.onKeyPress ? props.onKeyPress : null}
                 disabled={props.disabled}
+                editable={props.editable}
                 secureTextEntry={props.secureTextEntry}
                 onFocus={props.onFocus ? props.onFocus : null}
                 maxLength={props.maxLength ? props.maxLength : null}
