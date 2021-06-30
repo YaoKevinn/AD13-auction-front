@@ -8,6 +8,7 @@ export const DELETE_PAYMETHOD = 'DELETE_PAYMETHOD';
 export const ASSIGN_PAYMETHOD = 'ASSIGN_PAYMETHOD';
 export const SET_USER_PRODUCT_LIST = 'SET_USER_PRODUCT_LIST'
 export const SIGN_OUT = 'SIGN_OUT';
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 
 export const BASE_API_URL = 'https://app-tpo.herokuapp.com';
 

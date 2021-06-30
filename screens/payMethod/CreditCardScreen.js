@@ -24,7 +24,7 @@ const CreditCardScreen = props => {
 
     const getExpiredDate = (date) => {
         const dateObj = new Date(date);
-        const monthString = dateObj.getMonth().toString();
+        const monthString = (dateObj.getMonth()+1).toString();
         const yearString = dateObj.getFullYear().toString();
         if ( monthString.length === 1 ) {
             return '0' + monthString + '/' + yearString.slice(-2);
@@ -365,11 +365,15 @@ const CreditCardScreen = props => {
             {
                 isEditing ? (
                     <>
-                        <DefaultButton style={styles.assignBtn} onPress={ () => {
-                            assignAsPreferred();
-                        }}>
-                            Asignar como preferida
-                        </DefaultButton>
+                        {
+                            oldPayMethod.estado ? 
+                            <DefaultButton style={styles.assignBtn} onPress={ () => {
+                                assignAsPreferred();
+                            }}>
+                                Asignar como preferida
+                            </DefaultButton>
+                            : null
+                        }
                         <DefaultButton style={styles.removeBtn} onPress={ () => {
                             removePayMethod();
                         }}>
@@ -485,13 +489,14 @@ const styles = StyleSheet.create({
         marginLeft: 5
     },
     assignBtn: {
-        marginVertical: 5,
+        marginTop: 5,
         backgroundColor: '#CCC',
         flex: 1
     },
     removeBtn: {
         flex: 1,
-        backgroundColor: Colors.SECONDARY_RED
+        backgroundColor: Colors.SECONDARY_RED,
+        marginTop: 5,
     },
     btnRow: {
         flexDirection: 'row'

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, TextInput, Image, ImageBackground, TouchableOpacity, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, RefreshControl} from 'react-native';
+import { Text, View, StyleSheet, TextInput, Image, ImageBackground, TouchableOpacity, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, RefreshControl, Dimensions } from 'react-native';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { useSelector, useDispatch } from 'react-redux';
 import * as auctionsActions from '../../store/actions/auctions';
@@ -29,6 +30,7 @@ const AuctionItemScreen = props => {
     const [ errorMessage, setErrorMessage ] = useState(false);
     const [ refreshing, setRefreshing ] = useState(false);
     const [ tempWinner, setTempWinner ] = useState('-');
+    const [ activeSlide, setActiveSlide ] = useState(0);
 
     // const intervalRef = setInterval(  () => {
     //     if ( timeCounter === 0 ) {
@@ -56,8 +58,12 @@ const AuctionItemScreen = props => {
                 }
             }
         })
-        .catch( err => console.log('Fallo API /checkearPuja chequar producto =>', err))
+        .catch( err => console.log('Fallo API /checkearPuja chequar producto =>', err));
     })
+
+    useEffect( () => {
+        props.navigation.setParams({ activeSlide: activeSlide, changeSlide: setActiveSlide });
+    }, [activeSlide])
 
     const changePriceByPercentage = (percentage) => {
         setInputAmount( (product.pujaactual + (product.preciobase * percentage)).toFixed(2) );
@@ -156,7 +162,6 @@ const AuctionItemScreen = props => {
     const wait = (timeout) => {
         return new Promise(resolve => setTimeout(resolve, timeout));
     }
-
 
     return (
         <KeyboardAvoidingView 
@@ -309,8 +314,11 @@ const styles = StyleSheet.create({
     headerBackground: {
         width: '100%',
         height: 300,
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        zIndex: 0
+        // backgroundColor: 'rgba(0,0,0,0.6)',
+        backgroundColor: Colors.WHITE,
+        zIndex: 0,
+        flexDirection:'row', 
+        justifyContent: 'center',
     },
     // MAIN
     detailSection: {
@@ -426,18 +434,78 @@ const styles = StyleSheet.create({
 AuctionItemScreen.navigationOptions = (navData) => {
 
     const product = navData.navigation.getParam('product');
+    const windowWidth = Dimensions.get('window').width;
+    const activeSlide = navData.navigation.getParam('activeSlide') || 0;
+    const setActiveSlide = navData.navigation.getParam('changeSlide');
+
+    const _renderItem = ({item,index}) =>  {
+        
+        return (
+          <View style={{ 
+              width: '100%',
+              height: '100%'
+          }}>
+            <Image 
+                style={{width: '100%', height: '100%'}}
+                source={{ uri: item }}
+                resizeMode={'contain'}
+            />
+          </View>
+
+        )
+    }
+
+    const pagination = () => {
+        return (
+            <Pagination
+              dotsLength={product.imagenes.length}
+              activeDotIndex={activeSlide}
+              containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.25)', position: 'absolute', bottom: 5, borderRadius: 20, width: '90%', padding: 0, transform: [{ scale: 0.7 }]}}
+              dotStyle={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                  marginHorizontal: 8,
+                  marginVertical: -4,
+                  backgroundColor: Colors.WHITE
+              }}
+              inactiveDotStyle={{
+                  // Define styles for inactive dots here
+                  backgroundColor: Colors.WHITE
+              }}
+              inactiveDotOpacity={0.4}
+              inactiveDotScale={0.6}
+
+            />
+        );
+    }
+
 
     return {
         headerTitle: '',
         headerBackground: () => (
-            <ImageBackground
-                style={styles.headerBackground}
-                source={{ uri: (product.imagenes && product.imagenes.lenght !== 0 ? product.imagenes[0] : 'https://i.etsystatic.com/12182965/r/il/11e980/2001588984/il_570xN.2001588984_qtts.jpg') }}
-            >
-                  {/* <View style={modalOpened ? styles.overlay : null}>
-                </View> */}
-            </ImageBackground> 
+            // <ImageBackground
+            //     style={styles.headerBackground}
+            //     source={{ uri: (product.imagenes && product.imagenes.lenght !== 0 ? product.imagenes[0] : 'https://i.etsystatic.com/12182965/r/il/11e980/2001588984/il_570xN.2001588984_qtts.jpg') }}
+            // >
+            //       {/* <View style={modalOpened ? styles.overlay : null}>
+            //     </View> */}
+            // </ImageBackground> 
+
+            <View style={styles.headerBackground}>
+                <Carousel
+                  layout={"default"}
+                  ref={ref => this.carousel = ref}
+                  data={product.imagenes}
+                  sliderWidth={300}
+                  itemWidth={windowWidth}
+                  renderItem={_renderItem}
+                  onSnapToItem={(index) => setActiveSlide(index) }
+                 />
+                 { pagination() }
+            </View>
         ),
+        headerTintColor: Colors.PRIMARY_BLUE
     }
 }
 

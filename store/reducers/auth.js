@@ -8,7 +8,8 @@ import {
     DELETE_PAYMETHOD,
     ASSIGN_PAYMETHOD,
     SET_USER_PRODUCT_LIST,
-    SIGN_OUT
+    SIGN_OUT,
+    UPDATE_PROFILE
 } from '../actions/auth';
 import User from '../../models/User';
 
@@ -118,6 +119,8 @@ const authReducer = ( state = initialState, action ) => {
             return { ...state, allPayMethods: newPayMethodsList4 }
         case SET_USER_PRODUCT_LIST: 
             return { ...state, allUserProducts: action.allUserProducts }
+        case UPDATE_PROFILE: 
+            return { ...state, loggedUser: action.user }
         case SIGN_OUT:
             return { ...state, loggedUser: {}, userLoggedIn: false, allPayMethods: [] }
         default:
@@ -129,25 +132,28 @@ export default authReducer;
 
 // TEST USER
 // {
-    // admitido: 'si',
-    // apellido: 'Yao',
-    // categoria: 'oro',
-    // contraseña: 'ofvLC34Frs',
-    // direccion: null,
-    // documento: '94744232',
-    // estado: 'activo',
-    // fechanacimiento: 'Sat Aug 17 00:00:00 1996',
-    // foto: null,
-    // identificador: 62,
-    // mail: 'kevin85817@gmail.com',
-    // mediodepagopreferido: 1,
-    // metododepago: Array [
-    //   1,
-    //   2,
-    // ],
-    // nombre: 'Kevin',
-    // numeroPais: 1,
-    // recuperarcontrasenia: false,
-    // subastaasignada: null,
-    // verificador: 1,
-//   }
+//     admitido: 'si',
+//     apellido: 'Yao',
+//     categoria: 'platino',
+//     contraseña: 'ofvLC34Frs',
+//     direccion: null,
+//     documento: '94744232',
+//     estado: 'activo',
+//     fechanacimiento: 'Sat Aug 17 00:00:00 1996',
+//     foto: null,
+//     identificador: 62,
+//     mail: 'kevin85817@gmail.com',
+//     mediodepagopreferido: 3,
+//     metododepago: Array [
+//       1,
+//       3,
+//       6,
+//       22,
+//       19,
+//     ],
+//     nombre: 'Kevin',
+//     numeroPais: 1,
+//     recuperarcontrasenia: false,
+//     subastaasignada: null,
+//     verificador: 1,
+// }

@@ -10,10 +10,31 @@ import { useSelector } from 'react-redux';
 const ArticleCard = (props) => {
 
     const userLoggedIn = useSelector(state => state.auth.userLoggedIn);
+    const userCategory = useSelector(state => state.auth.loggedUser.categoria);
 
     const product = props.product;
+    const auctionCategory = props.auctionCategory;
 
     const [ pendingModalOpen, setPendingModalOpen ] = useState(false);
+    const [ categoryModalOpen, setCategoryModalOpen ] = useState(false);
+
+    const getCategoryNumber = (category) => {
+        console.log(category);
+        switch (category) {
+            case 'comun':
+               return 0;
+            case 'especial':
+                return 1;
+            case 'plata': 
+                return 2;
+            case 'oro':
+                return 3;
+            case 'platino':
+                return 4;
+            default:
+                return 0;
+        }
+    }
 
     
 
@@ -49,11 +70,15 @@ const ArticleCard = (props) => {
                                         style={ product.disponibleparaofertar ? styles.offerButton : styles.pendingButton}
                                         onPress={() => {
                                             if ( product.disponibleparaofertar ) {
-                                                props.navigation.navigate('AuctionItemScreen', {
-                                                    product: product,
-                                                    currency: props.currency,
-                                                    auctionId: props.auctionId
-                                                });
+                                                if ( getCategoryNumber(userCategory) >= getCategoryNumber(auctionCategory) ) {
+                                                    props.navigation.navigate('AuctionItemScreen', {
+                                                        product: product,
+                                                        currency: props.currency,
+                                                        auctionId: props.auctionId
+                                                    });
+                                                } else {
+                                                    setCategoryModalOpen(true);
+                                                }
                                             } else {
                                                 setPendingModalOpen(true);
                                             }
@@ -95,6 +120,12 @@ const ArticleCard = (props) => {
                 modalVisible={pendingModalOpen}
                 options={['Confirmar']}
                 actions={[() => setPendingModalOpen(false)]}
+            />
+            <DefaultModal 
+                title="Tu categoria actual no permite ofertar en esta subasta, contactanos para más información sobre aumento de categoria."
+                modalVisible={categoryModalOpen}
+                options={['Aceptar']}
+                actions={[() => setCategoryModalOpen(false)]}
             />
         </View>
     )

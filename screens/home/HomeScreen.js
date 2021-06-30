@@ -63,6 +63,7 @@ const HomeScreen = props => {
                                 key={auction.identificador}
                                 auction={auction}
                                 onPress={() => {
+                                    dispatch({type: auctionsActions.CLEAR_CURRENT_PRODUCT});
                                     if ( auction.estado === 'abierta' ) {
                                         props.navigation.navigate('AuctionScreen', {
                                             auctionId: auction.identificador,

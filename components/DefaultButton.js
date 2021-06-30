@@ -9,7 +9,7 @@ const DefaultButton = (props) => {
     return (
         <TouchableOpacity style={styles.container} onPress={props.onPress} activeOpacity={0.6}>
             <View style={{...styles.button, ...props.style}}>
-                <DefaultText style={styles.defaultText}>
+                <DefaultText style={ props.whiteButton ? styles.whiteBtnText : styles.defaultText}>
                     { props.children }
                 </DefaultText>
             </View>
@@ -33,6 +33,13 @@ const styles = StyleSheet.create({
         fontSize: 17,
         lineHeight: 25,
     },
+    whiteBtnText: {
+        color: Colors.SECONDARY_BLUE,
+        paddingHorizontal: 17,
+        lineHeight: 25,
+        fontSize: 17,
+        lineHeight: 25,
+    }
 })
 
 export default DefaultButton

@@ -19,6 +19,7 @@
 * expo install expo-media-library
 * expo install expo-permissions
 * expo install expo-image-manipulator
+* npm install --save react-native-snap-carousel
 
 * npm install
 
