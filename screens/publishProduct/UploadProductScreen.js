@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, ScrollView, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, ScrollView, KeyboardAvoidingView, Keyboard, Dimensions } from 'react-native';
 import CheckBox from 'react-native-check-box';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
 import * as authActions from '../../store/actions/auth';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import HeaderButton from '../../components/HeaderButton';
 import DefaultButton from '../../components/DefaultButton';
@@ -12,6 +13,7 @@ import DefaultTextInput from '../../components/DefaultTextInput';
 import DefaultModal from '../../components/DefaultModal';
 import Urls from '../../constants/Urls';
 import Colors from '../../constants/Colors';
+import { min } from 'react-native-reanimated';
 
 
 const UploadProductScreen = props => {
@@ -26,14 +28,19 @@ const UploadProductScreen = props => {
     const [ esArte, setEsArte ] = useState(false);
     const [ nombreArtista, setNombreArtista ] = useState('');
     const [ fechaCreacion, setFechaCreacion ] = useState('');
+    const [ historia, setHistoria ] = useState('');
     const [ descripcionCorta, setDescripcionCorta ] = useState('');
     const [ descripcionCompleta, setDescripcionCompleta] = useState('');
     const [ precioBase, setPrecioBase ] = useState('');
     const [ tycAccepted, setTycAccepted ] = useState(false);
-    const [imagenes, setImagenes] = useState(props.navigation.getParam('photos') || []);
+    const [ imagenes, setImagenes ] = useState(props.navigation.getParam('photos') || []);
+    const [ activeSlide, setActiveSlide ] = useState(0);
 
     const [ modalOpen, setModalOpen ] = useState(false);
     const [ modalMessage, setModalMessage ] = useState('');
+
+    const windowWidth = Dimensions.get('window').width;
+
 
     const imageUpload = () => {
         let ok = true;
@@ -56,19 +63,21 @@ const UploadProductScreen = props => {
             setModalMessage('Debe aceptar los TyC antes de publicar un producto');
             return
         }
-        if ( esArte ) {
+        if ( descripcionCorta !== '' && descripcionCompleta !== '' && precioBase !== '' ) {
             data.append('DescripcionCatalogo', descripcionCorta);
             data.append('DescripcionCompleta', descripcionCompleta );
             data.append('Dueño', userId);
             data.append('EsArte', esArte);
             data.append('PrecioBase', precioBase);
-            data.append('DataArte', 'null');
+            data.append('NombreArtista', nombreArtista);
+            data.append('FechaCreacion', fechaCreacion);
+            data.append('Hisotria', historia);
         } else {
-            data.append('DescripcionCatalogo', descripcionCorta);
-            data.append('DescripcionCompleta', descripcionCompleta );
-            data.append('PrecioBase', precioBase);
+            setModalOpen(true);
+            setModalMessage('Verifique los campos e intentá nuevamente');
+            return
         }
-
+        
         console.log(data)
 
         fetch(Urls.BASE_API_URL+'/subirProducto/',{
@@ -88,8 +97,50 @@ const UploadProductScreen = props => {
 
       }
 
+      const pagination = () => {
+        return (
+            <Pagination
+              dotsLength={(props.navigation.getParam('photos') || []).length}
+              activeDotIndex={activeSlide}
+              containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.25)', position: 'absolute', bottom: -50, borderRadius: 20, width: '90%', padding: 0, transform: [{ scale: 0.35 }]}}
+              dotStyle={{
+                  width: 15,
+                  height: 15,
+                  borderRadius: 15,
+                  marginHorizontal: 8,
+                  marginVertical: -4,
+                  backgroundColor: Colors.WHITE
+              }}
+              inactiveDotStyle={{
+                  // Define styles for inactive dots here
+                  backgroundColor: Colors.WHITE
+              }}
+              inactiveDotOpacity={0.4}
+              inactiveDotScale={0.6}
+
+            />
+        );
+    }
+
+    const _renderItem = ({item,index}) =>  {
+        return (
+          <View style={{ 
+              width: '100%',
+              height: '100%'
+          }}>
+            <Image 
+                style={{width: '100%', height: '100%'}}
+                source={{ uri: item.uri }}
+                resizeMode={'contain'}
+            />
+          </View>
+
+        )
+    }
+
+
     return (
-        <KeyboardAvoidingView style={styles.screen} behavior="padding">
+        <KeyboardAvoidingView style={styles.screen} behavior="position" keyboardVerticalOffset={-200}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss() } style={styles.detailSection}>
             <ScrollView>
                 <CheckBox
@@ -116,6 +167,13 @@ const UploadProductScreen = props => {
                                     placeholder="Fecha de creación" 
                                     value={fechaCreacion}
                                     onChangeText={(text) => setFechaCreacion(text)}
+                                />
+                            </View>
+                            <View style={styles.rowItem}>
+                                <DefaultTextInput 
+                                    placeholder="Historia" 
+                                    value={historia}
+                                    onChangeText={(text) => setHistoria(text)}
                                 />
                             </View>
                         </> : null
@@ -147,6 +205,21 @@ const UploadProductScreen = props => {
                             // pickImage();
                         }}>+ Cargar Imagenes </DefaultButton>
                     </View>
+                    { 
+                        (props.navigation.getParam('photos') || []).length !== 0 ?
+                        <View style={styles.carouselContainer}>
+                            <Carousel
+                                layout={"default"}
+                                ref={ref => {}}
+                                data={props.navigation.getParam('photos') || []}
+                                sliderWidth={windowWidth}
+                                itemWidth={368}
+                                renderItem={(item, index) => _renderItem(item, index)}
+                                onSnapToItem={(index) => setActiveSlide(index) }
+                            />
+                            { pagination() }
+                        </View> : null
+                    }
                     <CheckBox
                         style={{flex: 1, marginBottom: 40}}
                         onClick={()=>{
@@ -246,6 +319,14 @@ const styles = StyleSheet.create({
         height: 20,
         borderColor: '#000'
     },
+    carouselContainer: {
+        width: '100%',
+        height: 150,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 45,
+        overflow: 'visible'
+    }
 })
 
 UploadProductScreen.navigationOptions = (navData) => {

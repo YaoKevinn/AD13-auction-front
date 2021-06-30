@@ -23,6 +23,7 @@ import BankAccountScreen from '../screens/payMethod/BankAccountScreen';
 import GenerateNewPasswordScreen from '../screens/login/GenerateNewPasswordScreen';
 import UploadProductScreen from '../screens/publishProduct/UploadProductScreen';
 import ImageBrowserScreen from '../screens/publishProduct/ImageBrowserScreen';
+import DetailProductScreen from '../screens/publishProduct/DetailProductScreen';
 
 import Colors from "../constants/Colors";
 import DrawerContent from "../components/DrawerContent";
@@ -118,7 +119,8 @@ const PublishProductStackNavigator = createStackNavigator(
     {
         PublishProductScreen: { screen: PublishProductScreen },
         UploadProductScreen: { screen: UploadProductScreen },
-        ImageBrowserScreen: { screen: ImageBrowserScreen }
+        ImageBrowserScreen: { screen: ImageBrowserScreen },
+        DetailProductScreen: { screen:　DetailProductScreen }
     },
     {
         defaultNavigationOptions: defaultStackNavOptions,

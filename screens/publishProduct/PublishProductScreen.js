@@ -69,6 +69,11 @@ const PublishProductScreen = props => {
                                         <TouchableOpacity 
                                             style={styles.userProduct} 
                                             key={userProduct.identificador}
+                                            onPress={() => {
+                                                props.navigation.navigate('DetailProductScreen', {
+                                                    product: userProduct
+                                                })
+                                            }}
                                         >
                                             <View style={ userProduct.estado === 'aceptado' ? styles.status : ( userProduct.estado === 'rechazado' ? styles.rejectStatus : styles.pendingStatus)}></View>
                                             <View style={ styles.textContainer }>
