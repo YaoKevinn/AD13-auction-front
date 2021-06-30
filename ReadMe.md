@@ -14,6 +14,11 @@
 * npm i react-native-flip-card
 * npm install --save redux react-redux 
 * npm install --save redux-thunk
+* npm i react-native-check-box --save
+* npm install --save expo-image-picker-multiple
+* expo install expo-media-library
+* expo install expo-permissions
+* expo install expo-image-manipulator
 
 * npm install
 

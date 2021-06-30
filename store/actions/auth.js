@@ -6,6 +6,7 @@ export const EDIT_CARD_PAYMETHOD = 'EDIT_CARD_PAYMETHOD';
 export const EDIT_ACCOUNT_PAYMETHOD = 'EDIT_ACCOUNT_PAYMETHOD';
 export const DELETE_PAYMETHOD = 'DELETE_PAYMETHOD';
 export const ASSIGN_PAYMETHOD = 'ASSIGN_PAYMETHOD';
+export const SET_USER_PRODUCT_LIST = 'SET_USER_PRODUCT_LIST'
 export const SIGN_OUT = 'SIGN_OUT';
 
 export const BASE_API_URL = 'https://app-tpo.herokuapp.com';
@@ -66,6 +67,30 @@ export const fetchAllPayMethods = (idUsuario) => {
         // console.log(resData);
         dispatch({
             type: SET_ALL_PAYMETHODS, payMethods: resData
+        })
+    }
+}
+
+export const fetchAllUserProducts = (idUsuario) => {
+    return async dispatch => {
+        let resData = [];
+        const response = await fetch(BASE_API_URL+`/usuario/producto/${idUsuario}`, {
+            method: 'GET',
+            heaeder: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then( res => res.json())
+        .then( data => {
+            console.log('ÉXITO: API /usuario/producto/{idUser} lista de producto subido por usuario')
+            console.log(data);
+            resData = data;
+        })
+        .catch( err => console.log( 'FALLO: API /usuario/producto/{idUser} lista de producto subido por usuario =>', err));
+        // const resData = await response.json();
+        // console.log(resData);
+        dispatch({
+            type: SET_USER_PRODUCT_LIST, allUserProducts: resData
         })
     }
 }

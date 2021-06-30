@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
 import * as authActions from '../../store/actions/auth';
@@ -18,11 +18,23 @@ const PublishProductScreen = props => {
     const userProductList = useSelector(state => state.auth.allUserProducts);
     const dispatch = useDispatch();
 
+    const [ refreshing, setRefreshing ] = React.useState(false);
+
     useEffect(() => {
       if ( userLoggedIn ) {
           dispatch(authActions.fetchAllUserProducts(userId))
       }
     }, [dispatch])
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        dispatch(authActions.fetchAllUserProducts(userId))
+        wait(2000).then(() => setRefreshing(false));
+      }, []);
+
+    const wait = (timeout) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
 
 
     
@@ -36,10 +48,19 @@ const PublishProductScreen = props => {
                 Nuevo articulo
             </DefaultButton>
             <Divider style={styles.divider} />
-            <ScrollView style={styles.ProductsSection}>
+            <ScrollView 
+                style={styles.productsSection}
+                refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    title='actualizando...'
+                />
+            }
+            >
                 {
-                    UserProductList.length === 0 ? (
-                        <DefaultText style={styles.noProductsText}>No posee articulos aún</DefaultText>
+                    userProductList.length === 0 ? (
+                        <DefaultText style={styles.noProductsText}>No tiene ningún producto publicado</DefaultText>
                     ) : (
                         <>
                             {
@@ -49,12 +70,10 @@ const PublishProductScreen = props => {
                                             style={styles.userProduct} 
                                             key={userProduct.identificador}
                                         >
-                                            <View style={styles.UserProductsInfo}>
-                                                <View style={ UserProduct.estado ? styles.status : styles.pendingStatus}></View>
-                                                
+                                            <View style={ userProduct.estado === 'aceptado' ? styles.status : ( userProduct.estado === 'rechazado' ? styles.rejectStatus : styles.pendingStatus)}></View>
+                                            <View style={ styles.textContainer }>
+                                                 <DefaultText style={styles.text}>{ userProduct.descripcioncatalogo }</DefaultText>
                                             </View>
-                                            {
-                                            }
                                             <Ionicons style={styles.arrow} name="ios-arrow-forward" size={24} />
                                         </TouchableOpacity>
                                     )
@@ -64,17 +83,64 @@ const PublishProductScreen = props => {
                     )
                 }
             </ScrollView>
-            <DefaultButton onPress={() => {
+            {/* <DefaultButton onPress={() => {
                 props.navigation.navigate('HomeScreen');
-            }}>Volver a la subasta</DefaultButton>
-
+            }}>Volver a la subasta</DefaultButton> */}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     screen: {
-        flex: 1
+        flex: 1,
+        alignItems: 'center',
+        paddingTop: 65,
+        paddingHorizontal: 30
+    },
+    divider: {
+        marginVertical: 40,
+        width: '80%'
+    },
+    userProduct: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        width: '100%',
+        paddingVertical: 15,
+        paddingHorizontal: 18,
+        borderWidth: 1,
+        borderColor: Colors.BLACK,
+        marginBottom: 25
+    },
+    userProductsInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
+    productsSection: {
+        width: '100%'
+    },
+    textContainer: {
+        flex: 1,
+        marginLeft: 10
+    },
+    status: {
+        width: 10,
+        height: 10,
+        backgroundColor: '#90C7A6',
+        borderRadius: 10
+    },
+    pendingStatus: {
+        width: 10,
+        height: 10,
+        backgroundColor: '#E0E5A6',
+        borderRadius: 10
+    },
+    rejectStatus: {
+        width: 10,
+        height: 10,
+        backgroundColor: '#D09696',
+        borderRadius: 10
     }
 })
 

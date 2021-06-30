@@ -7,42 +7,49 @@ import {
     EDIT_ACCOUNT_PAYMETHOD,
     DELETE_PAYMETHOD,
     ASSIGN_PAYMETHOD,
+    SET_USER_PRODUCT_LIST,
     SIGN_OUT
 } from '../actions/auth';
 import User from '../../models/User';
 
 const initialState = {
     loggedUser: {
-        // admitido: 'si',
-        // apellido: 'Yao',
-        // categoria: 'platino',
-        // contraseña: 'ofvLC34Frs',
-        // direccion: null,
-        // documento: '94744232',
-        // estado: 'activo',
-        // fechanacimiento: 'Sat Aug 17 00:00:00 1996',
-        // foto: null,
-        // identificador: 62,
-        // mail: 'kevin85817@gmail.com',
-        // mediodepagopreferido: 1,
-        // metododepago: [
-        //     1,
-        //     2,
-        // ],
-        // nombre: 'Kevin',
-        // numeroPais: 1,
-        // recuperarcontrasenia: false,
-        // subastaasignada: null,
-        // verificador: 1,
+        admitido: 'si',
+        apellido: 'Yao',
+        categoria: 'platino',
+        contraseña: 'ofvLC34Frs',
+        direccion: null,
+        documento: '94744232',
+        estado: 'activo',
+        fechanacimiento: 'Sat Aug 17 00:00:00 1996',
+        foto: null,
+        identificador: 64,
+        mail: 'kevin85817@gmail.com',
+        mediodepagopreferido: 1,
+        metododepago: [
+            24,
+            23,
+            1,
+            3,
+            6,
+            22,
+            19,
+        ],
+        nombre: 'Kevin',
+        numeroPais: 1,
+        recuperarcontrasenia: false,
+        subastaasignada: null,
+        verificador: 1,
     },
-    userLoggedIn: false,
+    userLoggedIn: true,
     allPayMethods: [],
-    
+    allUserProducts: []
 }
 
 const authReducer = ( state = initialState, action ) => {
     switch (action.type) {
         case LOGIN:
+            console.log(action.user);
             return { ...state, loggedUser: action.user, userLoggedIn: true }  
         case SET_ALL_PAYMETHODS:
             return { ...state, allPayMethods: action.payMethods }  
@@ -109,6 +116,8 @@ const authReducer = ( state = initialState, action ) => {
                 }
             })
             return { ...state, allPayMethods: newPayMethodsList4 }
+        case SET_USER_PRODUCT_LIST: 
+            return { ...state, allUserProducts: action.allUserProducts }
         case SIGN_OUT:
             return { ...state, loggedUser: {}, userLoggedIn: false, allPayMethods: [] }
         default:
