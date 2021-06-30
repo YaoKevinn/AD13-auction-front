@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
 import * as authActions from '../../store/actions/auth';
@@ -18,6 +18,9 @@ const PayMethodScreen = props => {
     const idPreferredPayMethod = useSelector(state => state.auth.loggedUser.mediodepagopreferido);
     const payMethodsList = useSelector(state => state.auth.allPayMethods);
     const dispatch = useDispatch();
+
+    const [ refreshing, setRefreshing ] = useState(false);
+
 
     useEffect(() => {
         if ( userLoggedIn ) {
@@ -55,6 +58,16 @@ const PayMethodScreen = props => {
         }
     }
 
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        dispatch(authActions.fetchAllPayMethods(userId));
+        wait(2000).then(() => setRefreshing(false));
+      }, []);
+
+    const wait = (timeout) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+
     return (
         <View style={styles.screen}>
             <DefaultButton
@@ -65,7 +78,16 @@ const PayMethodScreen = props => {
                 Agregar medio de pago
             </DefaultButton>
             <Divider style={styles.divider} />
-            <ScrollView style={styles.methodsSection}>
+            <ScrollView 
+                style={styles.methodsSection}
+                refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    title='actualizando...'
+                />
+            }
+            >
                 {
                     payMethodsList.length === 0 ? (
                         <DefaultText style={styles.noMethodText}>No tenés ningún medio de pago ingresado.</DefaultText>
@@ -131,9 +153,9 @@ const PayMethodScreen = props => {
                     )
                 }
             </ScrollView>
-            <DefaultButton onPress={() => {
+            {/* <DefaultButton onPress={() => {
                 props.navigation.navigate('HomeScreen');
-            }}>Volver a la subasta</DefaultButton>
+            }}>Volver a la subasta</DefaultButton> */}
         </View>
     )
 }
