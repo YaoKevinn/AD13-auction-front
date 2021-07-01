@@ -49,7 +49,7 @@ const UploadProductScreen = props => {
         console.log(imagenes);
 
         const data = new FormData();
-        if ( imagenes.length !== 0 ) {
+        if ( photos.length !== 0 ) {
             photos.forEach((element, i) => {
                 data.append('files', element);
             })
