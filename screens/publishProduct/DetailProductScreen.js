@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl, Dimensions } from 'react-native'
 import CheckBox from 'react-native-check-box';
 import HeaderButton from '../../components/HeaderButton';
 import DefaultButton from '../../components/DefaultButton';
@@ -12,13 +12,22 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 const DetailProductScreen = props => {
 
+    const [ activeSlide, setActiveSlide ] = useState(0);
     const product = props.navigation.getParam('product');
     const esArte = product.esarte;
-    const imagenes = product.imagenes;
+    // const imagenes = product.imagenes;
+    const [ imagenes, setImagenes ] = useState([]);
+    const windowWidth = Dimensions.get('window').width;
+
+    useEffect(() => {
+        setImagenes(product.imagenes);
+    }, [])
+
     const pagination = () => {
+        console.log(imagenes)
         return (
             <Pagination
-              dotsLength={(props.navigation.getParam('photos') || []).length}
+              dotsLength={ product.imagenes.length }
               activeDotIndex={activeSlide}
               containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.25)', position: 'absolute', bottom: -50, borderRadius: 20, width: '90%', padding: 0, transform: [{ scale: 0.35 }]}}
               dotStyle={{
@@ -40,14 +49,15 @@ const DetailProductScreen = props => {
         );
     }
     const _renderItem = ({item,index}) =>  {
+        console.log('renderizado', index)
         return (
           <View style={{ 
               width: '100%',
-              height: '100%'
+              height: '100%',
           }}>
             <Image 
                 style={{width: '100%', height: '100%'}}
-                source={{ uri: element }}
+                source={{ uri: item }}
                 resizeMode={'contain'}
             />
           </View>
@@ -62,7 +72,8 @@ const DetailProductScreen = props => {
                     isChecked={esArte}
                     rightText={"Es un artículo de arte?"}
                     rightTextStyle={{fontSize: 17}}
-                    disabled= {'true'}
+                    disabled= {true}
+                    onClick={() => null}
                 />
             {
                         esArte ? 
@@ -101,20 +112,19 @@ const DetailProductScreen = props => {
                         value={product.descripcioncompleta}
                         />
                     </View>
-                    <Text>{product.preciobase}</Text>
                     <View style={styles.rowItem}>
                         <DefaultTextInput 
                         editable={false}
-                        value={product.preciobase}
+                        value={product.preciobase.toString()}
                         />
                     </View>
-                    { 
-                        (props.navigation.getParam('photos') || []).length !== 0 ?
+                    {   
+                        imagenes.length !== 0 ?
                         <View style={styles.carouselContainer}>
                             <Carousel
                                 layout={"default"}
                                 ref={ref => {}}
-                                data={product.imagenes}
+                                data={imagenes}
                                 sliderWidth={windowWidth}
                                 itemWidth={368}
                                 renderItem={(item, index) => _renderItem(item, index)}
