@@ -376,6 +376,7 @@ const CreditCardScreen = props => {
                         }
                         <DefaultButton style={styles.removeBtn} onPress={ () => {
                             removePayMethod();
+                            props.navigation.goBack();
                         }}>
                             Eliminar
                         </DefaultButton>

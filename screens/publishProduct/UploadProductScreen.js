@@ -71,7 +71,7 @@ const UploadProductScreen = props => {
             data.append('PrecioBase', precioBase);
             data.append('NombreArtista', nombreArtista);
             data.append('FechaCreacion', fechaCreacion);
-            data.append('Hisotria', historia);
+            data.append('Historia', historia);
         } else {
             setModalOpen(true);
             setModalMessage('Verifique los campos e intentá nuevamente');
@@ -92,8 +92,16 @@ const UploadProductScreen = props => {
             console.log('ÉXITO: API /subirProducto/ Upload Image')
             console.log(data);
             resData = data;
+            setModalOpen(true);
+            setModalMessage('Producto cargado con éxito');
+            props.navigation.goBack();
         })
-        .catch( err => console.log( 'FALLO: API /subirProducto/ Upload Image =>', err));
+        .catch( err => {
+            console.log( 'FALLO: API /subirProducto/ Upload Image =>', err);
+            setModalOpen(true);
+            setModalMessage('Error en cargar el product, intentá mas tarde');
+            props.navigation.goBack();
+        });
 
       }
 
@@ -233,7 +241,7 @@ const UploadProductScreen = props => {
                     <DefaultModal 
                         title={modalMessage}
                         modalVisible={modalOpen}
-                        options={['Cargar fotos']}
+                        options={['Aceptar']}
                         actions={[() => {
                             setModalOpen(false);
                         }]}

@@ -15,7 +15,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 const PublishProductScreen = props => {
     const userId = useSelector(state => state.auth.loggedUser.identificador);
     const userLoggedIn = useSelector(state => state.auth.loggedUser.identificador);
-    const userProductList = useSelector(state => state.auth.allUserProducts);
+    const userProductList = useSelector(state => state.auth.allUserProducts) || [];
     const dispatch = useDispatch();
 
     const [ refreshing, setRefreshing ] = React.useState(false);
@@ -64,11 +64,11 @@ const PublishProductScreen = props => {
                     ) : (
                         <>
                             {
-                                userProductList.map( userProduct => {
+                                userProductList.map( (userProduct, index) => {
                                     return (
                                         <TouchableOpacity 
                                             style={styles.userProduct} 
-                                            key={userProduct.identificador}
+                                            key={index}
                                             onPress={() => {
                                                 props.navigation.navigate('DetailProductScreen', {
                                                     product: userProduct
@@ -146,6 +146,9 @@ const styles = StyleSheet.create({
         height: 10,
         backgroundColor: '#D09696',
         borderRadius: 10
+    },
+    noProductsText: {
+        textAlign: 'center'
     }
 })
 

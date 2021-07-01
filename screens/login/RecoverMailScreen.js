@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
-
+import Urls from "../../constants/Urls";
 
 import Colors from '../../constants/Colors';
 import DefaultText from "../../components/DefaultText";
@@ -15,6 +15,21 @@ const RecoverMailScreen = props => {
 
     const [ mailInput, setMailInput ] = useState("");
     const [ recoverMailSentModalOpen, setRecoverMailSentModalOpen ] = useState(false);
+
+    const sendRecoverPassword = () => {
+        fetch( Urls.BASE_API_URL + `/usuario/recuperarContraseña`, {
+            method: 'POST',
+            header: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                Mail: mailInput
+            })
+        })
+        .then( res => res.json())
+        .then( data => {
+            console.log('ÉXITO: API /usuario/recuperarContraseña');
+            console.log(data);
+        }).catch( err => console.log( 'FALLO: API /usuario/recuperarContraseña =>',  err));   
+    }
  
     return (
         <View style={styles.screen}>
@@ -28,6 +43,7 @@ const RecoverMailScreen = props => {
             <DefaultButton
                 onPress={() => {
                     setRecoverMailSentModalOpen(true);
+                    sendRecoverPassword();
                 }}
             >
                 Recuperar contraseña
@@ -58,6 +74,7 @@ const RecoverMailScreen = props => {
                 onPress={() => {
                     setRecoverMailSentModalOpen(false);
                     props.navigation.goBack();
+                    props.navigation.getParam('setMailEntered')(false);
                 }}
             />
         </View>

@@ -287,6 +287,7 @@ const AuctionItemScreen = props => {
                     onPress={() => {
                         setOpenOfferSuccessModal(false);
                         props.navigation.goBack();
+                        dispatch(auctionsActions.fetchAllProductsByAuctionId(auctionId));
                     }}
                 />
             </ScrollView>

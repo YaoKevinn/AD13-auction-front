@@ -14,7 +14,7 @@ export const fetchAllAuctions = () => {
             BASE_API_URL+'/subastas', 
             {
                 method: 'GET',
-                heaeder: {
+                header: {
                     'Content-Type': 'application/json'
                 }
             }
@@ -62,6 +62,7 @@ export const fetchAllProductsByAuctionId = (subastaId) => {
 export const fetchUserAuctions = (userId) => {
     return async dispatch => {
         let resData = {};
+        let subastaArray = [];
         const response = await fetch(
             BASE_API_URL+`/historial/${userId}`, 
             {
@@ -73,7 +74,12 @@ export const fetchUserAuctions = (userId) => {
         ).then( res => res.json())
         .then( data => {
             console.log('ÉXITO: API /historial ', data.length)
+            console.log(data);
             resData = data;
+            if ( !resData.subastas.length ) {
+                subastaArray.push(resData.subastas);
+                resData.subastas = subastaArray;
+            }
         })
         .catch( err => console.log( 'FALLO: API /historial  =>', err) );
 

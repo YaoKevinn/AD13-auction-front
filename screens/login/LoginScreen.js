@@ -35,7 +35,9 @@ const LoginScreen = (props) => {
     const [errorModalMessage, setErrorModalMessage] = useState('');
 
     const goToRecoverPasswordScreen = () => {
-        props.navigation.navigate("RecoverMailScreen");
+        props.navigation.navigate("RecoverMailScreen", {
+            setMailEntered: setMailEntered
+        });
     };
 
     const goToSignupScreen = () => {

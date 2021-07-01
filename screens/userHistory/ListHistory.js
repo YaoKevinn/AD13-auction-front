@@ -14,14 +14,14 @@ const ListHistory = props => {
             <View style={styles.bigDataContainer}>
                 <View style={styles.dataContainer}>
                     <DefaultText style={styles.dataTitle}>Participación en subastas</DefaultText>
-                    <DefaultText style={styles.dataNumber}>{userAuctions.pujasrealizadas}</DefaultText>
+                    <DefaultText style={styles.dataNumber}>{userAuctions.pujasrealizadas || 0}</DefaultText>
                 </View>
                 <Divider style={styles.divider} />
             </View>
             <View style={styles.bigDataContainer}>
                 <View style={styles.dataContainer}>
                     <DefaultText style={styles.dataTitle}>Artículos ganados</DefaultText>
-                    <DefaultText style={styles.dataNumber}>{userAuctions.ganados}</DefaultText>
+                    <DefaultText style={styles.dataNumber}>{userAuctions.ganados  || 0}</DefaultText>
                 </View>
                 <Divider style={styles.divider} />
             </View>

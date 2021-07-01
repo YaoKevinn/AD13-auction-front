@@ -84,8 +84,12 @@ export const fetchAllUserProducts = (idUsuario) => {
         .then( res => res.json())
         .then( data => {
             console.log('ÉXITO: API /usuario/producto/{idUser} lista de producto subido por usuario')
-            console.log(data);
-            resData = data;
+            console.log(data.length, typeof data);
+            if ( !data.length ) {
+                resData.push(data);
+            } else {
+                resData = data;
+            }
         })
         .catch( err => console.log( 'FALLO: API /usuario/producto/{idUser} lista de producto subido por usuario =>', err));
         // const resData = await response.json();
