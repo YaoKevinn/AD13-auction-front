@@ -29,11 +29,11 @@ const ListHistory = props => {
                 <DefaultText style={styles.dataTitle}>Historial subastas</DefaultText>
                 <View style={styles.auctionItemsContainer}>
                     {
-                        userAuctions?.subastas?.map(el => {
+                        userAuctions?.subastas?.map((el, index) => {
                             return <TouchableOpacity
                                 onPress={() => props.handleItemDetail(loggedUser.identificador, el.identificador, el.nombre, el.moneda)}
                                 activeOpacity={0.5}
-                                key={el.identificador}
+                                key={index}
                             >
                                 <View style={styles.auctionItem} >
                                     <DefaultText style={styles.dataAuctions}>{el.nombre}</DefaultText>

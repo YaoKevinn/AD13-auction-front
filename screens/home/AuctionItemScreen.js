@@ -93,6 +93,11 @@ const AuctionItemScreen = props => {
             setErrorMessage(`El valor de oferta debe ser entre ${currency} ${minOfferValue.toFixed(2)} y ${currency} ${maxOfferValue.toFixed(2)}`);
             okForOffer = false;
         }
+        if ( !loggedUser.mediodepagopreferido ) {
+            setErrorModalOpen(true);
+            setErrorMessage(`Aún no tenes un método de pago preferido, por favor asigna uno antes de proceder`);
+            okForOffer = false;
+        }
         
         if ( okForOffer ) {
             console.log({

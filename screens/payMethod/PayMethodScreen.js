@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 50,
         textAlign: 'center',
         position: 'relative',
-        top: -100
+        top: 0
     },
     methodsContainer: {
         flex: 1

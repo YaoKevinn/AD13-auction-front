@@ -36,7 +36,7 @@ const DrawerContent = props => {
 
     const signOut = () => {
         dispatch({type: SIGN_OUT});
-        props.navigation.navigate('Login');
+        props.navigation.navigate('Home');
     }
 
     return (
@@ -44,7 +44,7 @@ const DrawerContent = props => {
             {
                 !userLoggedIn ? (
                     <TouchableOpacity 
-                        onPress={ ()=>{ props.navigation.navigate('Login') } } 
+                        onPress={ ()=>{ props.navigation.navigate('Login', { screen: 'LoginScreen' }) } } 
                         activeOpacity={0.5}
                     >
                         <View style={{...styles.button, ...styles.loginButton}}>

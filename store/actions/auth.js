@@ -34,7 +34,7 @@ export const login = (mail, password, navigation, openErrorModal) => {
                 openErrorModal('Usuario o contaseña inválida, por favor vuelva a intentar nuevamente.')
             }
             if ( data.identificador ) {
-                navigation.replace('HomeScreen')
+                navigation.navigate('Home');
             }
         })
         .catch( err => {
@@ -85,11 +85,13 @@ export const fetchAllUserProducts = (idUsuario) => {
         .then( data => {
             console.log('ÉXITO: API /usuario/producto/{idUser} lista de producto subido por usuario')
             console.log(data.length, typeof data);
-            if ( !data.length ) {
-                resData.push(data);
-            } else {
-                resData = data;
-            }
+            // if ( !data.length ) {
+            //     resData.push(data);
+            // } else {
+            //     resData = data;
+            // }
+            resData = data;
+            console.log(resData);
         })
         .catch( err => console.log( 'FALLO: API /usuario/producto/{idUser} lista de producto subido por usuario =>', err));
         // const resData = await response.json();

@@ -96,7 +96,7 @@ const ArticleCard = (props) => {
                                 activeOpacity={0.6} 
                                 style={styles.loginButton}
                                 onPress={() => {
-                                    props.navigation.navigate('LoginScreen');
+                                    props.navigation.navigate('Login');
                                 }}
                             >
                                 <DefaultText style={styles.loginButtonText}>Iniciá sesión</DefaultText>

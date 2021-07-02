@@ -46,6 +46,9 @@ const LoginScreen = (props) => {
 
     const login = () => {
         dispatch(authActions.login(mailInput, passwordInput, props.navigation, openErrorModal));
+        setMailInput('');
+        setPasswordInput('');
+        setStatusIcon(undefined);
     }
 
     const openErrorModal = (message) => {
@@ -98,7 +101,7 @@ const LoginScreen = (props) => {
                 />
                 {
                     statusIcon ? (
-                        <AntDesign style={styles.statusIcon} name={statusIcon} size={24} color={statusIcon === 'checkcircle' ? '#07D39B' : 'yellow'} />
+                        <AntDesign style={styles.statusIcon} name={statusIcon} size={24} color={statusIcon === 'checkcircle' ? '#07D39B' : '#DCC85D'} />
                     ) : null
                 }
             </View> 

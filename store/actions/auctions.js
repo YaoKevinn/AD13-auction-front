@@ -76,10 +76,6 @@ export const fetchUserAuctions = (userId) => {
             console.log('ÉXITO: API /historial ', data.length)
             console.log(data);
             resData = data;
-            if ( !resData.subastas.length ) {
-                subastaArray.push(resData.subastas);
-                resData.subastas = subastaArray;
-            }
         })
         .catch( err => console.log( 'FALLO: API /historial  =>', err) );
 
@@ -107,7 +103,11 @@ export const setHistoryInCurrentAuction = (userId, auctionId) => {
         ).then( res => res.json())
         .then( data => {
             console.log('ÉXITO: API /historialSubasta \n', data)
-            resData = data;
+            if ( !data.length ) {
+                resData.push(resData.subastas);
+            } else {
+                resData = data;
+            }
         })
         .catch( err => console.log( 'FALLO: API /historialSubasta =>', err) );
 
